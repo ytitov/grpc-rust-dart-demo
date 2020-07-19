@@ -1,0 +1,28 @@
+version: '3.7'
+ 
+services:
+
+  postgres:
+    #container_name: ${COMPOSE_PROJECT_NAME}_postgres
+    image: postgres:12.2-alpine
+    #build:
+    #  context: ../
+    #  dockerfile: ./docker-compose-nginx/postgres.Dockerfile
+    restart: always
+    environment:
+      # note: db and creds need to be defined here, see docker-compose-dev.yml
+      - PGDATA=/var/lib/postgres/data
+    volumes:
+      - dbdata:/var/lib/postgres/data
+    logging:
+      driver: json-file
+      options:
+        max-file: "5"
+        max-size: "10m"
+    networks:
+      - main
+
+volumes:
+  dbdata:
+networks:
+  main:

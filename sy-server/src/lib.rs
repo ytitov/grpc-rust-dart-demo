@@ -10,6 +10,8 @@ use std::time::Instant;
 use tokio::sync::mpsc;
 use tonic::{Request, Response, Status};
 
+use sqlx::postgres::PgPool;
+
 pub mod routeguide {
     tonic::include_proto!("routeguide");
 }
@@ -30,6 +32,7 @@ impl Eq for Point {}
 
 #[derive(Debug)]
 pub struct RouteGuideService {
+    pub pg_pool: PgPool,
     pub features: Arc<Vec<Feature>>,
 }
 
