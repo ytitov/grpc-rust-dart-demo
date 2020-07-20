@@ -22,6 +22,7 @@ package routeguide;
 
 // Interface exported by the server.
 service RouteGuide {
+  rpc GetFeaturePlus(Point) returns (Feature) {}
   // A simple RPC.
   //
   // Obtains the feature at a given position.

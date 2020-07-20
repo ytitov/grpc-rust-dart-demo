@@ -1,7 +1,7 @@
 pub use routeguide::route_guide_server::{RouteGuide, RouteGuideServer};
 use routeguide::{Feature, Point, Rectangle, RouteNote, RouteSummary};
-use std::hash::{Hash, Hasher};
 use std::collections::HashMap;
+use std::hash::{Hash, Hasher};
 
 use futures::{Stream, StreamExt};
 use std::pin::Pin;
@@ -11,6 +11,7 @@ use tokio::sync::mpsc;
 use tonic::{Request, Response, Status};
 
 use sqlx::postgres::PgPool;
+use sqlx::postgres::PgQueryAs;
 
 pub mod routeguide {
     tonic::include_proto!("routeguide");
@@ -38,6 +39,26 @@ pub struct RouteGuideService {
 
 #[tonic::async_trait]
 impl RouteGuide for RouteGuideService {
+    async fn get_feature_plus(
+        &self,
+        _request: Request<Point>,
+    ) -> Result<Response<Feature>, Status> {
+        let row: (i64,) = match sqlx::query_as("SELECT $1")
+            .bind(150_i64)
+            .fetch_one(&self.pg_pool)
+            .await
+        {
+            Ok(res) => {
+                println!("postgres query result {:?}", &res);
+                res
+            }
+            Err(_) => {
+                panic!("Holy cow");
+            }
+        };
+        unimplemented!()
+    }
+
     async fn get_feature(&self, request: Request<Point>) -> Result<Response<Feature>, Status> {
         for feature in &self.features[..] {
             if feature.location.as_ref() == Some(request.get_ref()) {

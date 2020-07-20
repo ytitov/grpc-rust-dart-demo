@@ -10,6 +10,7 @@ This project contatins a rust and dart grpc servers and clients.  Emphasis on ru
 # Server
 ## database
 Server needs a database, and assumes that there is one by default see `-h` if you try running the server.  For local development simply enter the docker folder and use the script `dc-dev.sh up` which runs the development version of the setup.  Add `-d` to it in order to run it in the background.
+  - Enter docker folder, then type the command `./dc-dev up -d`
 
 ## Starting
 Enter the directory `sy-server` when running these commands:
