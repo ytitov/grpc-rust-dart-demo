@@ -2,7 +2,7 @@
 use super::*;
 use sqlx::postgres::PgPool;
 mod manageusers;
-pub use manageusers::manage_users_server::{ ManageUsers, ManageUsersServer };
+pub use manageusers::manage_users_server::{ManageUsers, ManageUsersServer};
 use manageusers::*;
 
 #[derive(Debug)]

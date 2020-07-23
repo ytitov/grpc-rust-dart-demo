@@ -8,6 +8,14 @@ This project contatins a rust and dart grpc servers and clients.  Emphasis on ru
 - install docker (or install postgres manually)
 - install diesel cli (used for migrations).  Note that you may need to install postgres related dev libraries on your machine.
   `cargo install diesel`
+- need to install `protoc` to compile dart files easily:
+```
+PROTOC_ZIP=protoc-3.12.3-linux-x86_64.zip
+curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.12.3/$PROTOC_ZIP
+sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
+sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
+rm -f $PROTOC_ZIP
+```
 
 # proto files
 The proto files are found inside the base `proto` folder.  To generate code for the server, run `cargo run --bin build-proto-server` in the `sy-server` directory.  This only needs to be done when it is updated.  See `build-proto-server.rs` file for details in what it generates and where it goes.
@@ -26,3 +34,7 @@ Enter the directory `sy-server` when running these commands:
 # Client
 This is a dart client.  Enter the directory `sy-client`
 - `dart bin/client.dart`
+
+TODO:
+- create cli tool for using the manageusers service on the dart side of things
+- create a script which executes the necessary steps to generate the server and the client code as necessary 
