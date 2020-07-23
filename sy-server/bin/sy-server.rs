@@ -5,7 +5,11 @@ use clap::Clap;
 use sqlx::postgres::PgPool;
 use sqlx::postgres::PgQueryAs;
 
-use sy_server::{data, RouteGuideServer, RouteGuideService};
+use sy_server::{
+    data,
+    manageusers::{ManageUsersServer, ManageUsersService},
+    RouteGuideServer, RouteGuideService,
+};
 use tonic::transport::Server;
 
 #[derive(Clap, Debug, Clone)]
@@ -41,13 +45,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("postgres query result {:?}", &row);
 
     let route_guide = RouteGuideService {
-        pg_pool: pool,
+        pg_pool: pool.clone(),
         features: Arc::new(data::load()),
     };
 
     let svc = RouteGuideServer::new(route_guide);
 
-    Server::builder().add_service(svc).serve(addr).await?;
+    Server::builder()
+        .add_service(svc)
+        .add_service(ManageUsersServer::new(ManageUsersService { pg_pool: pool }))
+        .serve(addr)
+        .await?;
 
     Ok(())
 }
