@@ -1,0 +1,25 @@
+syntax = "proto3";
+package user;
+
+service ManageUsers {
+  rpc CreateUser(CreateUserParams) returns (User) {}
+  rpc List(ListParams) returns (stream User) {}
+}
+
+message CreateUserParams {
+  string email = 1;
+}
+
+message User {
+  string email = 1;
+  string id = 2;
+}
+
+enum ListSubject {
+  USERS = 0;
+  GROUPS = 1;
+}
+
+message ListParams {
+  ListSubject subject = 1;
+}
