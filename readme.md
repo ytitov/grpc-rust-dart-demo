@@ -16,6 +16,7 @@ sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
 sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
 rm -f $PROTOC_ZIP
 ```
+  may also need to run: `pub global activate protoc_plugin`
 
 # proto files
 The proto files are found inside the base `proto` folder.  To generate code for the server, run `cargo run --bin build-proto-server` in the `sy-server` directory.  This only needs to be done when it is updated.  See `build-proto-server.rs` file for details in what it generates and where it goes.
