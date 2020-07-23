@@ -10,6 +10,7 @@ edition = "2018"
 clap = "3.0.0-beta.1"
 # note: need tls feature once needing encryption
 tonic = "0.3"
+tonic-build = "0.3"
 prost = "0.6"
 tokio = { version = "0.2", features = ["macros", "sync", "stream", "time"] }
 # features may need later: tls, ipnetwork, bigdecimal
@@ -27,3 +28,7 @@ tonic-build = "0.3"
 [[bin]]
 name = "sy-server"
 path = "bin/sy-server.rs"
+
+[[bin]]
+name = "build-proto-server"
+path = "bin/build-proto-server.rs"

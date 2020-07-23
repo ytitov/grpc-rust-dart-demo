@@ -1,14 +1,16 @@
 syntax = "proto3";
-package user;
+package manageusers;
 
 service ManageUsers {
   rpc CreateUser(CreateUserParams) returns (User) {}
-  rpc List(ListParams) returns (stream User) {}
+  rpc ListUsers(EmptyParams) returns (stream User) {}
 }
 
 message CreateUserParams {
   string email = 1;
 }
+
+message EmptyParams {}
 
 message User {
   string email = 1;

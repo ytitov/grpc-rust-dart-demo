@@ -17,6 +17,8 @@ pub mod routeguide {
     tonic::include_proto!("routeguide");
 }
 
+pub mod manageusers;
+
 pub mod data;
 
 impl Hash for Point {
