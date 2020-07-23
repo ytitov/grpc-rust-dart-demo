@@ -7,6 +7,9 @@ This project contatins a rust and dart grpc servers and clients.  Emphasis on ru
     `cargo install cargo-watch`
 - install docker (or install postgres manually)
 
+# proto files
+The proto files are found inside the base `proto` folder.  To generate code for the server, run `cargo run --bin build-proto-server` in the `sy-server` directory.  This only needs to be done when it is updated.  See `build-proto-server.rs` file for details in what it generates and where it goes.
+
 # Server
 ## database
 Server needs a database, and assumes that there is one by default see `-h` if you try running the server.  For local development simply enter the docker folder and use the script `dc-dev.sh up` which runs the development version of the setup.  Add `-d` to it in order to run it in the background.
