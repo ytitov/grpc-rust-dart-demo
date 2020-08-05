@@ -11,7 +11,7 @@ use tokio::sync::mpsc;
 use tonic::{Request, Response, Status};
 
 use sqlx::postgres::PgPool;
-use sqlx::postgres::PgQueryAs;
+//use sqlx::postgres::PgQueryAs;
 
 pub mod routeguide {
     tonic::include_proto!("routeguide");
@@ -20,6 +20,13 @@ pub mod routeguide {
 pub mod manageusers;
 
 pub mod data;
+
+pub mod user;
+
+pub mod preamble {
+    pub use sqlx::{query_as, postgres::PgPool};
+    pub use sqlx::types::*;
+}
 
 impl Hash for Point {
     fn hash<H>(&self, state: &mut H)

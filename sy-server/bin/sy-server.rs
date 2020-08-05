@@ -3,7 +3,6 @@ use std::sync::Arc;
 use clap::Clap;
 
 use sqlx::postgres::PgPool;
-use sqlx::postgres::PgQueryAs;
 
 use sy_server::{
     data,
@@ -37,7 +36,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Starting server at {:?}", &addr);
 
     // Create a connection pool
-    let pool = PgPool::new(&opts.db_url).await?;
+    let pool = PgPool::connect(&opts.db_url).await?;
     let row: (i64,) = sqlx::query_as("SELECT $1")
         .bind(150_i64)
         .fetch_one(&pool)

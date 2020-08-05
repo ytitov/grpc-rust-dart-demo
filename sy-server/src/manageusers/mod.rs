@@ -2,6 +2,7 @@
 use super::*;
 use sqlx::postgres::PgPool;
 mod manageusers;
+use super::user;
 pub use manageusers::manage_users_server::{ManageUsers, ManageUsersServer};
 use manageusers::*;
 
@@ -16,10 +17,17 @@ impl ManageUsers for ManageUsersService {
     type ListUsersStream = mpsc::Receiver<Result<User, Status>>;
 
     async fn create_user(&self, _r: Request<CreateUserParams>) -> Result<Response<User>, Status> {
-        Ok(Response::new(User {
-            email: String::from("whatever@aol.blah"),
-            id: String::from("whatever string bro"),
-        }))
+        let p: CreateUserParams = _r.into_inner();
+        use user::User as UserModel;
+        match UserModel::create(&self.pg_pool, &p.email).await {
+            Ok(created_user) => Ok(Response::new(User {
+                email: created_user.username,
+                id: format!("{}", created_user.user_id),
+            })),
+            Err(e) => {
+                panic!("error {}", e);
+            }
+        }
     }
 
     async fn list_users(

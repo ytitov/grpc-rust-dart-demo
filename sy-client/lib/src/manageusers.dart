@@ -10,7 +10,7 @@ class Client {
   ClientChannel channel;
   ManageUsersClient stub;
 
-  Future<void> main(List<String> args) async {
+  Future<void> connect_and_create(String username) async {
     channel = ClientChannel('localhost',
         port: 10000,
         options:
@@ -19,7 +19,7 @@ class Client {
         options: CallOptions(timeout: Duration(seconds: 30)));
     // Run all of the demos in order.
     try {
-      await runCreateUser();
+      await runCreateUser(username);
     } catch (e) {
       print('Caught error: $e');
     }
@@ -28,8 +28,10 @@ class Client {
 
   /// Run the getFeature demo. Calls getFeature with a point known to have a
   /// feature and a point known not to have a feature.
-  Future<void> runCreateUser() async {
+  Future<void> runCreateUser(String email) async {
     final a = CreateUserParams();
+    a.email = email;
+    print("create user params $a");
     var r = await stub.createUser(a);
     print('${r}');
   }

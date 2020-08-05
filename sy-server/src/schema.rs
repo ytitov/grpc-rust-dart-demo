@@ -1,38 +1,37 @@
 table! {
-    Groups (groupId) {
-        groupId -> Uuid,
+    groups (group_id) {
+        group_id -> Uuid,
         name -> Varchar,
-        createdOn -> Timestamptz,
-        deletedOn -> Nullable<Timestamptz>,
+        created_on -> Timestamptz,
+        deleted_on -> Nullable<Timestamptz>,
     }
 }
 
 table! {
-    UserGroups (userId) {
-        userId -> Uuid,
-        groupId -> Uuid,
-        createdOn -> Timestamptz,
-        deletedOn -> Nullable<Timestamptz>,
+    user_groups (user_id) {
+        user_id -> Uuid,
+        group_id -> Uuid,
+        created_on -> Timestamptz,
+        deleted_on -> Nullable<Timestamptz>,
     }
 }
 
 table! {
-    Users (userId) {
-        userId -> Uuid,
+    users (user_id) {
+        user_id -> Uuid,
         username -> Varchar,
-        isActive -> Bool,
         hash -> Nullable<Varchar>,
         salt -> Nullable<Varchar>,
-        createdOn -> Timestamptz,
-        updatedOn -> Timestamptz,
-        deletedOn -> Nullable<Timestamptz>,
+        created_on -> Timestamptz,
+        updated_on -> Timestamptz,
+        deleted_on -> Nullable<Timestamptz>,
     }
 }
 
-joinable!(UserGroups -> Groups (groupId));
+joinable!(user_groups -> groups (group_id));
 
 allow_tables_to_appear_in_same_query!(
-    Groups,
-    UserGroups,
-    Users,
+    groups,
+    user_groups,
+    users,
 );

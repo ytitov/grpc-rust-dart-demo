@@ -14,7 +14,7 @@ tonic-build = "0.3"
 prost = "0.6"
 tokio = { version = "0.2", features = ["macros", "sync", "stream", "time"] }
 # features may need later: tls, ipnetwork, bigdecimal
-sqlx = { version = "0.3", default-features = false, features = [ "runtime-tokio", "macros", "postgres", "uuid", "chrono", "json" ] }
+sqlx = { version = "0.4.0-beta.1", default-features = false, features = [ "runtime-tokio", "macros", "postgres", "uuid", "chrono", "json" ] }
 futures = { version = "0.3", default-features = false, features = ["alloc"] }
 async-stream = "0.2"
 

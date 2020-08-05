@@ -9,3 +9,4 @@ dependencies:
   async: ^2.2.0
   grpc: ^2.2.0
   protobuf: ^1.0.1
+  args: ^1.6.0

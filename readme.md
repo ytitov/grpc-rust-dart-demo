@@ -9,7 +9,7 @@ This project contatins a rust and dart grpc servers and clients.  Emphasis on ru
 - install diesel cli (used for migrations).  Note that you may need to install postgres related dev libraries on your machine.
   `cargo install diesel`
 - need to install `protoc` to compile dart files easily:
-```
+```bash
 PROTOC_ZIP=protoc-3.12.3-linux-x86_64.zip
 curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.12.3/$PROTOC_ZIP
 sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc

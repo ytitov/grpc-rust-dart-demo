@@ -1,32 +1,31 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE "Groups" (
-  "groupId" uuid NOT NULL DEFAULT uuid_generate_v4(),
+CREATE TABLE groups (
+  group_id uuid NOT NULL DEFAULT uuid_generate_v4(),
   name character varying(255) NOT NULL,
-  "createdOn" timestamp with time zone NOT NULL DEFAULT now(),
-  "deletedOn" timestamp with time zone,
+  created_on timestamp with time zone NOT NULL DEFAULT now(),
+  deleted_on timestamp with time zone,
   UNIQUE (name),
-  PRIMARY KEY("groupId")
+  PRIMARY KEY(group_id)
 );
 
-CREATE TABLE "Users" (
-  "userId" uuid NOT NULL DEFAULT uuid_generate_v4(),
+CREATE TABLE users (
+  user_id uuid NOT NULL DEFAULT uuid_generate_v4(),
   username character varying(255) NOT NULL,
-  "isActive" boolean DEFAULT true NOT NULL,
   hash character varying(255),
   salt character varying(255),
-  "createdOn" timestamp with time zone NOT NULL DEFAULT now(),
-  "updatedOn" timestamp with time zone NOT NULL,
-  "deletedOn" timestamp with time zone,
-  PRIMARY KEY("userId")
+  created_on timestamp with time zone NOT NULL DEFAULT now(),
+  updated_on timestamp with time zone NOT NULL DEFAULT now(),
+  deleted_on timestamp with time zone,
+  PRIMARY KEY(user_id)
 );
 
-CREATE TABLE "UserGroups" (
-  "userId" uuid NOT NULL,
-  "groupId" uuid NOT NULL,
-  "createdOn" timestamp with time zone NOT NULL DEFAULT now(),
-  "deletedOn" timestamp with time zone,
-  UNIQUE ("userId", "groupId"),
-  FOREIGN KEY ("groupId") REFERENCES "Groups"("groupId"),
-  PRIMARY KEY("userId")
+CREATE TABLE user_groups (
+  user_id uuid NOT NULL,
+  group_id uuid NOT NULL,
+  created_on timestamp with time zone NOT NULL DEFAULT now(),
+  deleted_on timestamp with time zone,
+  UNIQUE (user_id, group_id),
+  FOREIGN KEY (group_id) REFERENCES groups(group_id),
+  PRIMARY KEY(user_id)
 );
