@@ -1,27 +1,35 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateUserParams {
     #[prost(string, tag = "1")]
-    pub email: std::string::String,
+    pub username: std::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateGroupParams {
+    #[prost(string, tag = "1")]
+    pub name: std::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EmptyParams {}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct User {
     #[prost(string, tag = "1")]
-    pub email: std::string::String,
+    pub username: std::string::String,
     #[prost(string, tag = "2")]
     pub id: std::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListParams {
-    #[prost(enumeration = "ListSubject", tag = "1")]
-    pub subject: i32,
+pub struct Group {
+    #[prost(string, tag = "1")]
+    pub id: std::string::String,
+    #[prost(string, tag = "2")]
+    pub name: std::string::String,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
-pub enum ListSubject {
+pub enum ListAllSubject {
     Users = 0,
     Groups = 1,
+    UserGroups = 2,
 }
 #[doc = r" Generated server implementations."]
 pub mod manage_users_server {
@@ -34,15 +42,28 @@ pub mod manage_users_server {
             &self,
             request: tonic::Request<super::CreateUserParams>,
         ) -> Result<tonic::Response<super::User>, tonic::Status>;
-        #[doc = "Server streaming response type for the ListUsers method."]
-        type ListUsersStream: Stream<Item = Result<super::User, tonic::Status>>
+        async fn create_group(
+            &self,
+            request: tonic::Request<super::CreateGroupParams>,
+        ) -> Result<tonic::Response<super::Group>, tonic::Status>;
+        #[doc = "Server streaming response type for the ListAllUsers method."]
+        type ListAllUsersStream: Stream<Item = Result<super::User, tonic::Status>>
             + Send
             + Sync
             + 'static;
-        async fn list_users(
+        async fn list_all_users(
             &self,
             request: tonic::Request<super::EmptyParams>,
-        ) -> Result<tonic::Response<Self::ListUsersStream>, tonic::Status>;
+        ) -> Result<tonic::Response<Self::ListAllUsersStream>, tonic::Status>;
+        #[doc = "Server streaming response type for the ListAllGroups method."]
+        type ListAllGroupsStream: Stream<Item = Result<super::Group, tonic::Status>>
+            + Send
+            + Sync
+            + 'static;
+        async fn list_all_groups(
+            &self,
+            request: tonic::Request<super::EmptyParams>,
+        ) -> Result<tonic::Response<Self::ListAllGroupsStream>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct ManageUsersServer<T: ManageUsers> {
@@ -107,12 +128,45 @@ pub mod manage_users_server {
                     };
                     Box::pin(fut)
                 }
-                "/manageusers.ManageUsers/ListUsers" => {
+                "/manageusers.ManageUsers/CreateGroup" => {
                     #[allow(non_camel_case_types)]
-                    struct ListUsersSvc<T: ManageUsers>(pub Arc<T>);
-                    impl<T: ManageUsers> tonic::server::ServerStreamingService<super::EmptyParams> for ListUsersSvc<T> {
+                    struct CreateGroupSvc<T: ManageUsers>(pub Arc<T>);
+                    impl<T: ManageUsers> tonic::server::UnaryService<super::CreateGroupParams> for CreateGroupSvc<T> {
+                        type Response = super::Group;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::CreateGroupParams>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).create_group(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let interceptor = inner.1.clone();
+                        let inner = inner.0;
+                        let method = CreateGroupSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = if let Some(interceptor) = interceptor {
+                            tonic::server::Grpc::with_interceptor(codec, interceptor)
+                        } else {
+                            tonic::server::Grpc::new(codec)
+                        };
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/manageusers.ManageUsers/ListAllUsers" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListAllUsersSvc<T: ManageUsers>(pub Arc<T>);
+                    impl<T: ManageUsers> tonic::server::ServerStreamingService<super::EmptyParams>
+                        for ListAllUsersSvc<T>
+                    {
                         type Response = super::User;
-                        type ResponseStream = T::ListUsersStream;
+                        type ResponseStream = T::ListAllUsersStream;
                         type Future =
                             BoxFuture<tonic::Response<Self::ResponseStream>, tonic::Status>;
                         fn call(
@@ -120,7 +174,7 @@ pub mod manage_users_server {
                             request: tonic::Request<super::EmptyParams>,
                         ) -> Self::Future {
                             let inner = self.0.clone();
-                            let fut = async move { (*inner).list_users(request).await };
+                            let fut = async move { (*inner).list_all_users(request).await };
                             Box::pin(fut)
                         }
                     }
@@ -128,7 +182,42 @@ pub mod manage_users_server {
                     let fut = async move {
                         let interceptor = inner.1;
                         let inner = inner.0;
-                        let method = ListUsersSvc(inner);
+                        let method = ListAllUsersSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = if let Some(interceptor) = interceptor {
+                            tonic::server::Grpc::with_interceptor(codec, interceptor)
+                        } else {
+                            tonic::server::Grpc::new(codec)
+                        };
+                        let res = grpc.server_streaming(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/manageusers.ManageUsers/ListAllGroups" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListAllGroupsSvc<T: ManageUsers>(pub Arc<T>);
+                    impl<T: ManageUsers> tonic::server::ServerStreamingService<super::EmptyParams>
+                        for ListAllGroupsSvc<T>
+                    {
+                        type Response = super::Group;
+                        type ResponseStream = T::ListAllGroupsStream;
+                        type Future =
+                            BoxFuture<tonic::Response<Self::ResponseStream>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::EmptyParams>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).list_all_groups(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let interceptor = inner.1;
+                        let inner = inner.0;
+                        let method = ListAllGroupsSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = if let Some(interceptor) = interceptor {
                             tonic::server::Grpc::with_interceptor(codec, interceptor)

@@ -18,10 +18,19 @@ class ManageUsersClient extends $grpc.Client {
       '/manageusers.ManageUsers/CreateUser',
       ($0.CreateUserParams value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.User.fromBuffer(value));
-  static final _$listUsers = $grpc.ClientMethod<$0.EmptyParams, $0.User>(
-      '/manageusers.ManageUsers/ListUsers',
+  static final _$createGroup =
+      $grpc.ClientMethod<$0.CreateGroupParams, $0.Group>(
+          '/manageusers.ManageUsers/CreateGroup',
+          ($0.CreateGroupParams value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $0.Group.fromBuffer(value));
+  static final _$listAllUsers = $grpc.ClientMethod<$0.EmptyParams, $0.User>(
+      '/manageusers.ManageUsers/ListAllUsers',
       ($0.EmptyParams value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.User.fromBuffer(value));
+  static final _$listAllGroups = $grpc.ClientMethod<$0.EmptyParams, $0.Group>(
+      '/manageusers.ManageUsers/ListAllGroups',
+      ($0.EmptyParams value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.Group.fromBuffer(value));
 
   ManageUsersClient($grpc.ClientChannel channel, {$grpc.CallOptions options})
       : super(channel, options: options);
@@ -34,9 +43,26 @@ class ManageUsersClient extends $grpc.Client {
     return $grpc.ResponseFuture(call);
   }
 
-  $grpc.ResponseStream<$0.User> listUsers($0.EmptyParams request,
+  $grpc.ResponseFuture<$0.Group> createGroup($0.CreateGroupParams request,
       {$grpc.CallOptions options}) {
-    final call = $createCall(_$listUsers, $async.Stream.fromIterable([request]),
+    final call = $createCall(
+        _$createGroup, $async.Stream.fromIterable([request]),
+        options: options);
+    return $grpc.ResponseFuture(call);
+  }
+
+  $grpc.ResponseStream<$0.User> listAllUsers($0.EmptyParams request,
+      {$grpc.CallOptions options}) {
+    final call = $createCall(
+        _$listAllUsers, $async.Stream.fromIterable([request]),
+        options: options);
+    return $grpc.ResponseStream(call);
+  }
+
+  $grpc.ResponseStream<$0.Group> listAllGroups($0.EmptyParams request,
+      {$grpc.CallOptions options}) {
+    final call = $createCall(
+        _$listAllGroups, $async.Stream.fromIterable([request]),
         options: options);
     return $grpc.ResponseStream(call);
   }
@@ -53,13 +79,27 @@ abstract class ManageUsersServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.CreateUserParams.fromBuffer(value),
         ($0.User value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.CreateGroupParams, $0.Group>(
+        'CreateGroup',
+        createGroup_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.CreateGroupParams.fromBuffer(value),
+        ($0.Group value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.EmptyParams, $0.User>(
-        'ListUsers',
-        listUsers_Pre,
+        'ListAllUsers',
+        listAllUsers_Pre,
         false,
         true,
         ($core.List<$core.int> value) => $0.EmptyParams.fromBuffer(value),
         ($0.User value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.EmptyParams, $0.Group>(
+        'ListAllGroups',
+        listAllGroups_Pre,
+        false,
+        true,
+        ($core.List<$core.int> value) => $0.EmptyParams.fromBuffer(value),
+        ($0.Group value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.User> createUser_Pre($grpc.ServiceCall call,
@@ -67,13 +107,27 @@ abstract class ManageUsersServiceBase extends $grpc.Service {
     return createUser(call, await request);
   }
 
-  $async.Stream<$0.User> listUsers_Pre(
+  $async.Future<$0.Group> createGroup_Pre($grpc.ServiceCall call,
+      $async.Future<$0.CreateGroupParams> request) async {
+    return createGroup(call, await request);
+  }
+
+  $async.Stream<$0.User> listAllUsers_Pre(
       $grpc.ServiceCall call, $async.Future<$0.EmptyParams> request) async* {
-    yield* listUsers(call, await request);
+    yield* listAllUsers(call, await request);
+  }
+
+  $async.Stream<$0.Group> listAllGroups_Pre(
+      $grpc.ServiceCall call, $async.Future<$0.EmptyParams> request) async* {
+    yield* listAllGroups(call, await request);
   }
 
   $async.Future<$0.User> createUser(
       $grpc.ServiceCall call, $0.CreateUserParams request);
-  $async.Stream<$0.User> listUsers(
+  $async.Future<$0.Group> createGroup(
+      $grpc.ServiceCall call, $0.CreateGroupParams request);
+  $async.Stream<$0.User> listAllUsers(
+      $grpc.ServiceCall call, $0.EmptyParams request);
+  $async.Stream<$0.Group> listAllGroups(
       $grpc.ServiceCall call, $0.EmptyParams request);
 }

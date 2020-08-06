@@ -5,10 +5,13 @@ import 'package:args/args.dart';
 // https://github.com/dart-lang/args/blob/master/example/test_runner.dart
 main(List<String> args) async {
   var mainParser = ArgParser();
-  var userAddCmd = mainParser.addCommand('add', ArgParser()
+  var userAddCmd = mainParser.addCommand('add-user', ArgParser()
       ..addOption('username', abbr: 'u', help: 'username of the new user')
   );
-  var setCmd = mainParser.addCommand('set');
+  var groupAddCmd = mainParser.addCommand('add-group', ArgParser()
+      ..addOption('name', abbr: 'n', help: 'name of the group')
+  );
+  var listGroupsCmd = mainParser.addCommand('list-groups');
   var listCmd = mainParser.addCommand('list');
 
   // create a connection
@@ -19,18 +22,26 @@ main(List<String> args) async {
 
     if (par.command != null) {
       switch (par.command.name) {
-        case 'add': {
+        case 'add-user': {
           try {
             var p = userAddCmd.parse(args);
             await c.createUser(p['username']);
           } catch (e) {
-            print(e);
-            print(userAddCmd.usage);
+            print("${e.message}");
           }
           break;
         }
-        case 'set': {
-          print("set command not implemented");
+        case 'add-group': {
+          try {
+            var p = groupAddCmd.parse(args);
+            await c.createGroup(p['name']);
+          } catch (e) {
+            print("${e.toString()}");
+          }
+          break;
+        }
+        case 'list-groups': {
+          await c.listAllGroups();
           break;
         }
         case 'list': {
@@ -38,7 +49,11 @@ main(List<String> args) async {
           break;
         }
         default: {
-          print("Not handled");
+          print("You must issue one of the commands with the following flags:");
+          for (final c in mainParser.commands.keys) {
+            print(c);
+            print(mainParser.commands[c].usage);
+          }
         }
       }
     } else {
