@@ -1,10 +1,10 @@
 //tonic::include_proto!("manageusers");
 use super::*;
 use sqlx::postgres::PgPool;
-mod manageusers;
+pub mod manageusers;
 use super::user;
 pub use manageusers::manage_users_server::{ManageUsers, ManageUsersServer};
-use manageusers::*;
+pub use manageusers::*;
 
 #[derive(Debug)]
 pub struct ManageUsersService {
