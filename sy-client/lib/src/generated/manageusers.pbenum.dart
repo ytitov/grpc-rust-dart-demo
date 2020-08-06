@@ -9,18 +9,20 @@
 import 'dart:core' as $core;
 import 'package:protobuf/protobuf.dart' as $pb;
 
-class ListSubject extends $pb.ProtobufEnum {
-  static const ListSubject USERS = ListSubject._(0, 'USERS');
-  static const ListSubject GROUPS = ListSubject._(1, 'GROUPS');
+class ListAllSubject extends $pb.ProtobufEnum {
+  static const ListAllSubject USERS = ListAllSubject._(0, 'USERS');
+  static const ListAllSubject GROUPS = ListAllSubject._(1, 'GROUPS');
+  static const ListAllSubject USER_GROUPS = ListAllSubject._(2, 'USER_GROUPS');
 
-  static const $core.List<ListSubject> values = <ListSubject> [
+  static const $core.List<ListAllSubject> values = <ListAllSubject> [
     USERS,
     GROUPS,
+    USER_GROUPS,
   ];
 
-  static final $core.Map<$core.int, ListSubject> _byValue = $pb.ProtobufEnum.initByValue(values);
-  static ListSubject valueOf($core.int value) => _byValue[value];
+  static final $core.Map<$core.int, ListAllSubject> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static ListAllSubject valueOf($core.int value) => _byValue[value];
 
-  const ListSubject._($core.int v, $core.String n) : super(v, n);
+  const ListAllSubject._($core.int v, $core.String n) : super(v, n);
 }
 

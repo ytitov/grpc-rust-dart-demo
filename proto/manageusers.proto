@@ -3,25 +3,34 @@ package manageusers;
 
 service ManageUsers {
   rpc CreateUser(CreateUserParams) returns (User) {}
-  rpc ListUsers(EmptyParams) returns (stream User) {}
+  rpc CreateGroup(CreateGroupParams) returns (Group) {}
+  rpc ListAllUsers(EmptyParams) returns (stream User) {}
+  rpc ListAllGroups(EmptyParams) returns (stream Group) {}
 }
 
 message CreateUserParams {
-  string email = 1;
+  string username = 1;
+}
+
+message CreateGroupParams {
+  string name = 1;
 }
 
 message EmptyParams {}
 
 message User {
-  string email = 1;
+  string username = 1;
   string id = 2;
 }
 
-enum ListSubject {
-  USERS = 0;
-  GROUPS = 1;
+message Group {
+  string id = 1;
+  string name = 2;
 }
 
-message ListParams {
-  ListSubject subject = 1;
+enum ListAllSubject {
+  USERS = 0;
+  GROUPS = 1;
+  USER_GROUPS = 2;
 }
+

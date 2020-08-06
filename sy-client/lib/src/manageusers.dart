@@ -13,16 +13,30 @@ class Client {
     channel = ClientChannel(url,
         port: port,
         options:
-        const ChannelOptions(credentials: ChannelCredentials.insecure()));
+            const ChannelOptions(credentials: ChannelCredentials.insecure()));
     stub = ManageUsersClient(channel,
         options: CallOptions(timeout: Duration(seconds: 30)));
   }
 
-  Future<void> createUser(String email) async {
+  Future<void> createUser(String username) async {
     final a = CreateUserParams();
-    a.email = email;
+    a.username = username;
     var r = await stub.createUser(a);
     print('created user:\n${r}');
+  }
+
+  Future<void> createGroup(String name) async {
+    final g = CreateGroupParams();
+    g.name = name;
+    var r = await stub.createGroup(g);
+    print('created group:\n${r}');
+  }
+
+  Future<void> listAllGroups() async {
+    final g = EmptyParams();
+    await for (var g in stub.listAllGroups(g)) {
+      print(g);
+    }
   }
 
   Future<void> shutdown() async {

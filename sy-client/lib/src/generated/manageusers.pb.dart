@@ -9,13 +9,11 @@ import 'dart:core' as $core;
 
 import 'package:protobuf/protobuf.dart' as $pb;
 
-import 'manageusers.pbenum.dart';
-
 export 'manageusers.pbenum.dart';
 
 class CreateUserParams extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('CreateUserParams', package: const $pb.PackageName('manageusers'), createEmptyInstance: create)
-    ..aOS(1, 'email')
+    ..aOS(1, 'username')
     ..hasRequiredFields = false
   ;
 
@@ -35,13 +33,44 @@ class CreateUserParams extends $pb.GeneratedMessage {
   static CreateUserParams _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get email => $_getSZ(0);
+  $core.String get username => $_getSZ(0);
   @$pb.TagNumber(1)
-  set email($core.String v) { $_setString(0, v); }
+  set username($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasEmail() => $_has(0);
+  $core.bool hasUsername() => $_has(0);
   @$pb.TagNumber(1)
-  void clearEmail() => clearField(1);
+  void clearUsername() => clearField(1);
+}
+
+class CreateGroupParams extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('CreateGroupParams', package: const $pb.PackageName('manageusers'), createEmptyInstance: create)
+    ..aOS(1, 'name')
+    ..hasRequiredFields = false
+  ;
+
+  CreateGroupParams._() : super();
+  factory CreateGroupParams() => create();
+  factory CreateGroupParams.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CreateGroupParams.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  CreateGroupParams clone() => CreateGroupParams()..mergeFromMessage(this);
+  CreateGroupParams copyWith(void Function(CreateGroupParams) updates) => super.copyWith((message) => updates(message as CreateGroupParams));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static CreateGroupParams create() => CreateGroupParams._();
+  CreateGroupParams createEmptyInstance() => create();
+  static $pb.PbList<CreateGroupParams> createRepeated() => $pb.PbList<CreateGroupParams>();
+  @$core.pragma('dart2js:noInline')
+  static CreateGroupParams getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CreateGroupParams>(create);
+  static CreateGroupParams _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get name => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set name($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasName() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearName() => clearField(1);
 }
 
 class EmptyParams extends $pb.GeneratedMessage {
@@ -67,7 +96,7 @@ class EmptyParams extends $pb.GeneratedMessage {
 
 class User extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('User', package: const $pb.PackageName('manageusers'), createEmptyInstance: create)
-    ..aOS(1, 'email')
+    ..aOS(1, 'username')
     ..aOS(2, 'id')
     ..hasRequiredFields = false
   ;
@@ -88,13 +117,13 @@ class User extends $pb.GeneratedMessage {
   static User _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get email => $_getSZ(0);
+  $core.String get username => $_getSZ(0);
   @$pb.TagNumber(1)
-  set email($core.String v) { $_setString(0, v); }
+  set username($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasEmail() => $_has(0);
+  $core.bool hasUsername() => $_has(0);
   @$pb.TagNumber(1)
-  void clearEmail() => clearField(1);
+  void clearUsername() => clearField(1);
 
   @$pb.TagNumber(2)
   $core.String get id => $_getSZ(1);
@@ -106,34 +135,44 @@ class User extends $pb.GeneratedMessage {
   void clearId() => clearField(2);
 }
 
-class ListParams extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ListParams', package: const $pb.PackageName('manageusers'), createEmptyInstance: create)
-    ..e<ListSubject>(1, 'subject', $pb.PbFieldType.OE, defaultOrMaker: ListSubject.USERS, valueOf: ListSubject.valueOf, enumValues: ListSubject.values)
+class Group extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('Group', package: const $pb.PackageName('manageusers'), createEmptyInstance: create)
+    ..aOS(1, 'id')
+    ..aOS(2, 'name')
     ..hasRequiredFields = false
   ;
 
-  ListParams._() : super();
-  factory ListParams() => create();
-  factory ListParams.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory ListParams.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  ListParams clone() => ListParams()..mergeFromMessage(this);
-  ListParams copyWith(void Function(ListParams) updates) => super.copyWith((message) => updates(message as ListParams));
+  Group._() : super();
+  factory Group() => create();
+  factory Group.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Group.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  Group clone() => Group()..mergeFromMessage(this);
+  Group copyWith(void Function(Group) updates) => super.copyWith((message) => updates(message as Group));
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
-  static ListParams create() => ListParams._();
-  ListParams createEmptyInstance() => create();
-  static $pb.PbList<ListParams> createRepeated() => $pb.PbList<ListParams>();
+  static Group create() => Group._();
+  Group createEmptyInstance() => create();
+  static $pb.PbList<Group> createRepeated() => $pb.PbList<Group>();
   @$core.pragma('dart2js:noInline')
-  static ListParams getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ListParams>(create);
-  static ListParams _defaultInstance;
+  static Group getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Group>(create);
+  static Group _defaultInstance;
 
   @$pb.TagNumber(1)
-  ListSubject get subject => $_getN(0);
+  $core.String get id => $_getSZ(0);
   @$pb.TagNumber(1)
-  set subject(ListSubject v) { setField(1, v); }
+  set id($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasSubject() => $_has(0);
+  $core.bool hasId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearSubject() => clearField(1);
+  void clearId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get name => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set name($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasName() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearName() => clearField(2);
 }
 
