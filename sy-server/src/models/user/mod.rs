@@ -1,4 +1,4 @@
-use super::preamble::*;
+use crate::preamble::*;
 
 #[derive(sqlx::FromRow)]
 pub struct User {

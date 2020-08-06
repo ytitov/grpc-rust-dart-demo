@@ -2,7 +2,7 @@
 use super::*;
 use sqlx::postgres::PgPool;
 pub mod manageusers;
-use super::user;
+use super::models;
 pub use manageusers::manage_users_server::{ManageUsers, ManageUsersServer};
 pub use manageusers::*;
 
@@ -18,7 +18,7 @@ impl ManageUsers for ManageUsersService {
 
     async fn create_user(&self, _r: Request<CreateUserParams>) -> Result<Response<User>, Status> {
         let p: CreateUserParams = _r.into_inner();
-        use user::User as UserModel;
+        use models::user::User as UserModel;
         match UserModel::create(&self.pg_pool, &p.email).await {
             Ok(created_user) => Ok(Response::new(User {
                 email: created_user.username,

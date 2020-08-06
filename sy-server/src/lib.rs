@@ -3,7 +3,7 @@ use tonic::{Request, Response, Status};
 
 pub mod manageusers;
 
-pub mod user;
+pub mod models;
 
 pub mod preamble {
     pub use sqlx::{query_as, postgres::PgPool};
