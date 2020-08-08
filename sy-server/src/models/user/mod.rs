@@ -21,4 +21,10 @@ impl User {
             .await?;
         Ok(User { user_id: r.user_id, username: r.username } )
     }
+
+    pub async fn list_all(p: &PgPool) -> Result<Vec<Self>, sqlx::Error> {
+        let r = sqlx::query_as!(User, "SELECT user_id, username FROM users").fetch_all(p).await?;
+
+        Ok(r)
+    }
 }
