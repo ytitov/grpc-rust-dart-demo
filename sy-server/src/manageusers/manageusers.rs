@@ -24,6 +24,18 @@ pub struct Group {
     #[prost(string, tag = "2")]
     pub name: std::string::String,
 }
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct WhichUser {
+    #[prost(string, tag = "1")]
+    pub username: std::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GenericError {
+    #[prost(bool, tag = "1")]
+    pub success: bool,
+    #[prost(string, tag = "2")]
+    pub message: std::string::String,
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum ListAllSubject {
@@ -64,6 +76,10 @@ pub mod manage_users_server {
             &self,
             request: tonic::Request<super::EmptyParams>,
         ) -> Result<tonic::Response<Self::ListAllGroupsStream>, tonic::Status>;
+        async fn delete_user(
+            &self,
+            request: tonic::Request<super::WhichUser>,
+        ) -> Result<tonic::Response<super::GenericError>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct ManageUsersServer<T: ManageUsers> {
@@ -225,6 +241,37 @@ pub mod manage_users_server {
                             tonic::server::Grpc::new(codec)
                         };
                         let res = grpc.server_streaming(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/manageusers.ManageUsers/DeleteUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct DeleteUserSvc<T: ManageUsers>(pub Arc<T>);
+                    impl<T: ManageUsers> tonic::server::UnaryService<super::WhichUser> for DeleteUserSvc<T> {
+                        type Response = super::GenericError;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::WhichUser>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).delete_user(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let interceptor = inner.1.clone();
+                        let inner = inner.0;
+                        let method = DeleteUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = if let Some(interceptor) = interceptor {
+                            tonic::server::Grpc::with_interceptor(codec, interceptor)
+                        } else {
+                            tonic::server::Grpc::new(codec)
+                        };
+                        let res = grpc.unary(method, req).await;
                         Ok(res)
                     };
                     Box::pin(fut)

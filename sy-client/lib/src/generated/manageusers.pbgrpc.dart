@@ -31,6 +31,10 @@ class ManageUsersClient extends $grpc.Client {
       '/manageusers.ManageUsers/ListAllGroups',
       ($0.EmptyParams value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.Group.fromBuffer(value));
+  static final _$deleteUser = $grpc.ClientMethod<$0.WhichUser, $0.GenericError>(
+      '/manageusers.ManageUsers/DeleteUser',
+      ($0.WhichUser value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.GenericError.fromBuffer(value));
 
   ManageUsersClient($grpc.ClientChannel channel, {$grpc.CallOptions options})
       : super(channel, options: options);
@@ -66,6 +70,14 @@ class ManageUsersClient extends $grpc.Client {
         options: options);
     return $grpc.ResponseStream(call);
   }
+
+  $grpc.ResponseFuture<$0.GenericError> deleteUser($0.WhichUser request,
+      {$grpc.CallOptions options}) {
+    final call = $createCall(
+        _$deleteUser, $async.Stream.fromIterable([request]),
+        options: options);
+    return $grpc.ResponseFuture(call);
+  }
 }
 
 abstract class ManageUsersServiceBase extends $grpc.Service {
@@ -100,6 +112,13 @@ abstract class ManageUsersServiceBase extends $grpc.Service {
         true,
         ($core.List<$core.int> value) => $0.EmptyParams.fromBuffer(value),
         ($0.Group value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.WhichUser, $0.GenericError>(
+        'DeleteUser',
+        deleteUser_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.WhichUser.fromBuffer(value),
+        ($0.GenericError value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.User> createUser_Pre($grpc.ServiceCall call,
@@ -122,6 +141,11 @@ abstract class ManageUsersServiceBase extends $grpc.Service {
     yield* listAllGroups(call, await request);
   }
 
+  $async.Future<$0.GenericError> deleteUser_Pre(
+      $grpc.ServiceCall call, $async.Future<$0.WhichUser> request) async {
+    return deleteUser(call, await request);
+  }
+
   $async.Future<$0.User> createUser(
       $grpc.ServiceCall call, $0.CreateUserParams request);
   $async.Future<$0.Group> createGroup(
@@ -130,4 +154,6 @@ abstract class ManageUsersServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.EmptyParams request);
   $async.Stream<$0.Group> listAllGroups(
       $grpc.ServiceCall call, $0.EmptyParams request);
+  $async.Future<$0.GenericError> deleteUser(
+      $grpc.ServiceCall call, $0.WhichUser request);
 }

@@ -6,6 +6,7 @@ use super::models;
 pub use manageusers::manage_users_server::{ManageUsers, ManageUsersServer};
 pub use manageusers::*;
 use models::group::Group as GroupModel;
+use models::user::User as UserModel;
 
 #[derive(Debug)]
 pub struct ManageUsersService {
@@ -27,9 +28,10 @@ impl ManageUsers for ManageUsersService {
                 username: created_user.username,
                 id: format!("{}", created_user.user_id),
             })),
-            Err(e) => {
-                Err(Status::invalid_argument(format!("There was an error creating a user: {}", e)))
-            }
+            Err(e) => Err(Status::invalid_argument(format!(
+                        "There was an error creating a user: {}",
+                        e
+            ))),
         }
     }
 
@@ -40,10 +42,23 @@ impl ManageUsers for ManageUsersService {
                 name: created_group.name,
                 id: format!("{}", created_group.group_id),
             })),
-            Err(e) => {
-                Err(Status::invalid_argument(format!("There was an error creating a group: {}", e)))
-            }
+            Err(e) => Err(Status::invalid_argument(format!(
+                        "There was an error creating a group: {}",
+                        e
+            ))),
         }
+    }
+
+    async fn delete_user(&self, r: Request<WhichUser>) -> Result<Response<GenericError>, Status> {
+        let reqparms: WhichUser = r.into_inner();
+
+        // try to delete a user
+        let genericerror = match UserModel::delete_user(&self.pg_pool, &reqparms.username).await {
+            Ok(msg) => msg,
+            Err(e) => GenericError{ success: false, message: format!("Failed to delete user: {}", e).into() },
+        };
+
+        Ok(Response::new(genericerror))
     }
 
     async fn list_all_users(
@@ -51,20 +66,23 @@ impl ManageUsers for ManageUsersService {
         _r: Request<EmptyParams>,
     ) -> Result<Response<Self::ListAllUsersStream>, Status> {
         let (mut tx, rx) = mpsc::channel(4);
-        
-        use models::user::User as UserModel;
 
         // fetch userlist from DB
         let userlist = match UserModel::list_all(&self.pg_pool).await {
             Ok(list) => list,
-            Err(_) => vec![],
+            Err(_) => vec![], // error returns empty list?
         };
 
         // send the userlist
         tokio::spawn(async move {
             for user in userlist {
-                tx.send(Ok(User{ username: user.username, id: user.user_id.to_string() })).await.unwrap();
-            }
+                tx.send(Ok(User {
+                    username: user.username,
+                    id: user.user_id.to_string(),
+                }))
+                .await
+                    .unwrap();
+                }
         });
 
         Ok(Response::new(rx))
@@ -88,8 +106,8 @@ impl ManageUsers for ManageUsersService {
                     name: feature.name,
                 }))
                 .await
-                .unwrap();
-            }
+                    .unwrap();
+                }
         });
         Ok(Response::new(rx))
     }

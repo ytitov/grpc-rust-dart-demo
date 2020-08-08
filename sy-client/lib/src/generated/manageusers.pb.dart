@@ -176,3 +176,75 @@ class Group extends $pb.GeneratedMessage {
   void clearName() => clearField(2);
 }
 
+class WhichUser extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('WhichUser', package: const $pb.PackageName('manageusers'), createEmptyInstance: create)
+    ..aOS(1, 'username')
+    ..hasRequiredFields = false
+  ;
+
+  WhichUser._() : super();
+  factory WhichUser() => create();
+  factory WhichUser.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory WhichUser.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  WhichUser clone() => WhichUser()..mergeFromMessage(this);
+  WhichUser copyWith(void Function(WhichUser) updates) => super.copyWith((message) => updates(message as WhichUser));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static WhichUser create() => WhichUser._();
+  WhichUser createEmptyInstance() => create();
+  static $pb.PbList<WhichUser> createRepeated() => $pb.PbList<WhichUser>();
+  @$core.pragma('dart2js:noInline')
+  static WhichUser getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<WhichUser>(create);
+  static WhichUser _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get username => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set username($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasUsername() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearUsername() => clearField(1);
+}
+
+class GenericError extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('GenericError', package: const $pb.PackageName('manageusers'), createEmptyInstance: create)
+    ..aOB(1, 'success')
+    ..aOS(2, 'message')
+    ..hasRequiredFields = false
+  ;
+
+  GenericError._() : super();
+  factory GenericError() => create();
+  factory GenericError.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory GenericError.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  GenericError clone() => GenericError()..mergeFromMessage(this);
+  GenericError copyWith(void Function(GenericError) updates) => super.copyWith((message) => updates(message as GenericError));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static GenericError create() => GenericError._();
+  GenericError createEmptyInstance() => create();
+  static $pb.PbList<GenericError> createRepeated() => $pb.PbList<GenericError>();
+  @$core.pragma('dart2js:noInline')
+  static GenericError getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GenericError>(create);
+  static GenericError _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get success => $_getBF(0);
+  @$pb.TagNumber(1)
+  set success($core.bool v) { $_setBool(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSuccess() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSuccess() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get message => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set message($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasMessage() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMessage() => clearField(2);
+}
+

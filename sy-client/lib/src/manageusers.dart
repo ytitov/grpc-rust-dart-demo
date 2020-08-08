@@ -46,6 +46,13 @@ class Client {
     }
   }
 
+  Future<void> deleteUser(username) async {
+    final sendmsg = WhichUser();
+    sendmsg.username = username;
+    var response = await stub.deleteUser(sendmsg);
+    print(response);
+  }
+
   Future<void> shutdown() async {
     await channel.shutdown();
   }

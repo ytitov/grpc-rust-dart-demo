@@ -8,6 +8,9 @@ main(List<String> args) async {
   var userAddCmd = mainParser.addCommand('add-user', ArgParser()
       ..addOption('username', abbr: 'u', help: 'username of the new user')
   );
+  var userDelCmd = mainParser.addCommand('delete-user', ArgParser()
+      ..addOption('username', abbr: 'u', help: 'username of the user to delete')
+  );
   var groupAddCmd = mainParser.addCommand('add-group', ArgParser()
       ..addOption('name', abbr: 'n', help: 'name of the group')
   );
@@ -37,6 +40,15 @@ main(List<String> args) async {
             await c.createGroup(p['name']);
           } catch (e) {
             print("${e.toString()}");
+          }
+          break;
+        }
+        case 'delete-user': {
+          try {
+            var p = userDelCmd.parse(args);
+            await c.deleteUser(p['username']);
+          } catch (e) {
+            print("${e.message}");
           }
           break;
         }
