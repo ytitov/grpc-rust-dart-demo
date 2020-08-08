@@ -12,7 +12,7 @@ main(List<String> args) async {
       ..addOption('name', abbr: 'n', help: 'name of the group')
   );
   var listGroupsCmd = mainParser.addCommand('list-groups');
-  var listCmd = mainParser.addCommand('list');
+  var listUsersCmd = mainParser.addCommand('list-users');
 
   // create a connection
   var c = Client('localhost', 10000);
@@ -44,8 +44,8 @@ main(List<String> args) async {
           await c.listAllGroups();
           break;
         }
-        case 'list': {
-          print("list command not implemented");
+        case 'list-users': {
+          await c.listAllUsers();
           break;
         }
         default: {

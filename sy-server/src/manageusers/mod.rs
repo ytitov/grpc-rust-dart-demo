@@ -50,7 +50,24 @@ impl ManageUsers for ManageUsersService {
         &self,
         _r: Request<EmptyParams>,
     ) -> Result<Response<Self::ListAllUsersStream>, Status> {
-        unimplemented!()
+        let (mut tx, rx) = mpsc::channel(4);
+        
+        use models::user::User as UserModel;
+
+        // fetch userlist from DB
+        let userlist = match UserModel::list_all(&self.pg_pool).await {
+            Ok(list) => list,
+            Err(_) => vec![],
+        };
+
+        // send the userlist
+        tokio::spawn(async move {
+            for user in userlist {
+                tx.send(Ok(User{ username: user.username, id: user.user_id.to_string() })).await.unwrap();
+            }
+        });
+
+        Ok(Response::new(rx))
     }
 
     async fn list_all_groups(

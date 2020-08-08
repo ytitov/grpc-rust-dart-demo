@@ -39,6 +39,13 @@ class Client {
     }
   }
 
+  Future<void> listAllUsers() async {
+    final sendmsg = EmptyParams();
+    await for (var replymsg in stub.listAllUsers(sendmsg)) {
+      print(replymsg);
+    }
+  }
+
   Future<void> shutdown() async {
     await channel.shutdown();
   }
