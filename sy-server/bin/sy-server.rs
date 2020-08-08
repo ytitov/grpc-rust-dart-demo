@@ -64,18 +64,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 #[derive(Debug, Clone)]
 struct Svc<S> {
     svc: S,
+    // added it here because for some odd reason could not get to the pg_pool inside
+    // ManageUsersService even though it sees the type correctly
     pg_pool: PgPool,
 }
 
-//impl<S, Req> Service<Req> for Svc<S>
-impl<ManageUsersService, Req> Service<Req> for Svc<ManageUsersService>
+//impl<ManageUsersService, Req> Service<Req> for Svc<ManageUsersService>
+impl<S, Req> Service<Req> for Svc<S>
 where
-    ManageUsersService: Service<Req> + Send + Clone + 'static,
-    ManageUsersService::Future: Send + 'static,
+    S: Service<Req> + Send + Clone + 'static,
+    S::Future: Send + 'static,
     Req: Send + 'static,
 {
-    type Response = ManageUsersService::Response;
-    type Error = ManageUsersService::Error;
+    type Response = S::Response;
+    type Error = S::Error;
     type Future = futures::future::BoxFuture<'static, Result<Self::Response, Self::Error>>;
 
     fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
@@ -83,7 +85,7 @@ where
     }
 
     fn call(&mut self, req: Req) -> Self::Future {
-        let mut svc: ManageUsersService = self.svc.clone();
+        let mut svc = self.svc.clone();
         let pg_pool = self.pg_pool.clone();
         //let p = &self.svc.pg_pool;
 
