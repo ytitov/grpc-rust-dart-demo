@@ -74,7 +74,7 @@ impl<S, Req> Service<Req> for Svc<S>
 where
     S: Service<Req> + Send + Clone + 'static,
     S::Future: Send + 'static,
-    Req: Send + 'static,
+    Req: Send + 'static + std::fmt::Debug,
 {
     type Response = S::Response;
     type Error = S::Error;
@@ -84,7 +84,10 @@ where
         self.svc.poll_ready(cx)
     }
 
+    // this is defined as a trait, and I can't get to the actual Request
+    // and if I try to define it as a Request<()> it flips out
     fn call(&mut self, req: Req) -> Self::Future {
+        //let p = req.into_inner();
         let mut svc = self.svc.clone();
         let pg_pool = self.pg_pool.clone();
         //let p = &self.svc.pg_pool;
@@ -95,6 +98,7 @@ where
                 .bind(150_i64)
                 .fetch_one(&pg_pool)
                 .await;
+            println!("req: {:?}", &req);
             println!("postgres query inside middleware {:?}", &row);
             // very confused why this can't see pg_pool
             //println!("{:?}", &svc.pg_pool);
