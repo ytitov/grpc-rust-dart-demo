@@ -6,6 +6,7 @@ service ManageUsers {
   rpc CreateGroup(CreateGroupParams) returns (Group) {}
   rpc ListAllUsers(EmptyParams) returns (stream User) {}
   rpc ListAllGroups(EmptyParams) returns (stream Group) {}
+  rpc DeleteUser(WhichUser) returns (GenericError) {}
 }
 
 message CreateUserParams {
@@ -34,3 +35,12 @@ enum ListAllSubject {
   USER_GROUPS = 2;
 }
 
+message WhichUser
+{
+  string username = 1;
+}
+
+message GenericError {
+  bool success = 1;
+  string message = 2;
+}

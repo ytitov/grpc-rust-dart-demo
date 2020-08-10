@@ -1,4 +1,5 @@
 use crate::preamble::*;
+use crate::manageusers::GenericError;
 
 #[derive(sqlx::FromRow)]
 pub struct User {
@@ -23,8 +24,22 @@ impl User {
     }
 
     pub async fn list_all(p: &PgPool) -> Result<Vec<Self>, sqlx::Error> {
-        let r = sqlx::query_as!(User, "SELECT user_id, username FROM users").fetch_all(p).await?;
+        let r = sqlx::query_as!(User, "SELECT user_id, username FROM users WHERE deleted_on IS NULL").fetch_all(p).await?;
 
         Ok(r)
+    }
+
+    pub async fn delete_user(p: &PgPool, username: &str) -> Result<GenericError, sqlx::Error> {
+        // find user in db, set delted timestamp
+        let _r: User = sqlx::query_as("SELECT user_id, username FROM users WHERE username LIKE $1")
+            .bind(username)
+            .fetch_one(p).await?;
+
+        // set delted_on timestamp to delete the user
+        sqlx::query("UPDATE users SET deleted_on = NOW() WHERE username LIKE $1")
+            .bind(username)
+            .execute(p).await?;
+
+        Ok(GenericError{ success: true, message: format!("User {} deleted", username).into() })
     }
 }

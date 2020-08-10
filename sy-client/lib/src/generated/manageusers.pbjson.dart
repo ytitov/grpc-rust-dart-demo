@@ -48,3 +48,18 @@ const Group$json = const {
   ],
 };
 
+const WhichUser$json = const {
+  '1': 'WhichUser',
+  '2': const [
+    const {'1': 'username', '3': 1, '4': 1, '5': 9, '10': 'username'},
+  ],
+};
+
+const GenericError$json = const {
+  '1': 'GenericError',
+  '2': const [
+    const {'1': 'success', '3': 1, '4': 1, '5': 8, '10': 'success'},
+    const {'1': 'message', '3': 2, '4': 1, '5': 9, '10': 'message'},
+  ],
+};
+
