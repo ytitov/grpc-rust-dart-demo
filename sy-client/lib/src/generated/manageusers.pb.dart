@@ -248,3 +248,44 @@ class GenericError extends $pb.GeneratedMessage {
   void clearMessage() => clearField(2);
 }
 
+class RenamedUser extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('RenamedUser', package: const $pb.PackageName('manageusers'), createEmptyInstance: create)
+    ..aOS(1, 'oldusername')
+    ..aOS(2, 'newusername')
+    ..hasRequiredFields = false
+  ;
+
+  RenamedUser._() : super();
+  factory RenamedUser() => create();
+  factory RenamedUser.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RenamedUser.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  RenamedUser clone() => RenamedUser()..mergeFromMessage(this);
+  RenamedUser copyWith(void Function(RenamedUser) updates) => super.copyWith((message) => updates(message as RenamedUser));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static RenamedUser create() => RenamedUser._();
+  RenamedUser createEmptyInstance() => create();
+  static $pb.PbList<RenamedUser> createRepeated() => $pb.PbList<RenamedUser>();
+  @$core.pragma('dart2js:noInline')
+  static RenamedUser getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RenamedUser>(create);
+  static RenamedUser _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get oldusername => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set oldusername($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasOldusername() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearOldusername() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get newusername => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set newusername($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasNewusername() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearNewusername() => clearField(2);
+}
+

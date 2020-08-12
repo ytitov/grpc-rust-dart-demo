@@ -46,6 +46,14 @@ class Client {
     }
   }
 
+  Future<void> renameUser(oldusername, newusername) async {
+    final sendmsg = RenamedUser();
+    sendmsg.oldusername = oldusername;
+	sendmsg.newusername = newusername;
+    var response = await stub.renameUser(sendmsg);
+    print(response);
+  }
+
   Future<void> deleteUser(username) async {
     final sendmsg = WhichUser();
     sendmsg.username = username;

@@ -35,6 +35,11 @@ class ManageUsersClient extends $grpc.Client {
       '/manageusers.ManageUsers/DeleteUser',
       ($0.WhichUser value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.GenericError.fromBuffer(value));
+  static final _$renameUser =
+      $grpc.ClientMethod<$0.RenamedUser, $0.GenericError>(
+          '/manageusers.ManageUsers/RenameUser',
+          ($0.RenamedUser value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $0.GenericError.fromBuffer(value));
 
   ManageUsersClient($grpc.ClientChannel channel, {$grpc.CallOptions options})
       : super(channel, options: options);
@@ -75,6 +80,14 @@ class ManageUsersClient extends $grpc.Client {
       {$grpc.CallOptions options}) {
     final call = $createCall(
         _$deleteUser, $async.Stream.fromIterable([request]),
+        options: options);
+    return $grpc.ResponseFuture(call);
+  }
+
+  $grpc.ResponseFuture<$0.GenericError> renameUser($0.RenamedUser request,
+      {$grpc.CallOptions options}) {
+    final call = $createCall(
+        _$renameUser, $async.Stream.fromIterable([request]),
         options: options);
     return $grpc.ResponseFuture(call);
   }
@@ -119,6 +132,13 @@ abstract class ManageUsersServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.WhichUser.fromBuffer(value),
         ($0.GenericError value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.RenamedUser, $0.GenericError>(
+        'RenameUser',
+        renameUser_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.RenamedUser.fromBuffer(value),
+        ($0.GenericError value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.User> createUser_Pre($grpc.ServiceCall call,
@@ -146,6 +166,11 @@ abstract class ManageUsersServiceBase extends $grpc.Service {
     return deleteUser(call, await request);
   }
 
+  $async.Future<$0.GenericError> renameUser_Pre(
+      $grpc.ServiceCall call, $async.Future<$0.RenamedUser> request) async {
+    return renameUser(call, await request);
+  }
+
   $async.Future<$0.User> createUser(
       $grpc.ServiceCall call, $0.CreateUserParams request);
   $async.Future<$0.Group> createGroup(
@@ -156,4 +181,6 @@ abstract class ManageUsersServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.EmptyParams request);
   $async.Future<$0.GenericError> deleteUser(
       $grpc.ServiceCall call, $0.WhichUser request);
+  $async.Future<$0.GenericError> renameUser(
+      $grpc.ServiceCall call, $0.RenamedUser request);
 }

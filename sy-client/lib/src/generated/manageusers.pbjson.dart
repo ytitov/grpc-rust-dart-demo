@@ -63,3 +63,11 @@ const GenericError$json = const {
   ],
 };
 
+const RenamedUser$json = const {
+  '1': 'RenamedUser',
+  '2': const [
+    const {'1': 'oldusername', '3': 1, '4': 1, '5': 9, '10': 'oldusername'},
+    const {'1': 'newusername', '3': 2, '4': 1, '5': 9, '10': 'newusername'},
+  ],
+};
+

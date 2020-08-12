@@ -31,6 +31,7 @@ impl User {
 
     pub async fn delete_user(p: &PgPool, username: &str) -> Result<GenericError, sqlx::Error> {
         // find user in db, set delted timestamp
+        // TODO: This first query is not necessary
         let _r: User = sqlx::query_as("SELECT user_id, username FROM users WHERE username LIKE $1")
             .bind(username)
             .fetch_one(p).await?;
@@ -41,5 +42,11 @@ impl User {
             .execute(p).await?;
 
         Ok(GenericError{ success: true, message: format!("User {} deleted", username).into() })
+    }
+
+    pub async fn rename(p: &PgPool, oldusername: &str, newusername: &str) -> Result<GenericError, sqlx::Error> {
+        // TODO: duplicate user name checking
+        //sqlx::query("UPDATE users SET username
+        unimplemented!()
     }
 }

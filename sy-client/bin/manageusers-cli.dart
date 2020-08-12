@@ -5,6 +5,10 @@ import 'package:args/args.dart';
 // https://github.com/dart-lang/args/blob/master/example/test_runner.dart
 main(List<String> args) async {
   var mainParser = ArgParser();
+  var userRenameCmd = mainParser.addCommand('rename-user', ArgParser()
+      ..addOption('oldusername', abbr: 'u', help: 'username of the existing user, use with -n newname')
+      ..addOption('newusername', abbr: 'n', help: 'username to change to, use with -u oldname')
+  );
   var userAddCmd = mainParser.addCommand('add-user', ArgParser()
       ..addOption('username', abbr: 'u', help: 'username of the new user')
   );
@@ -45,8 +49,18 @@ main(List<String> args) async {
         }
         case 'delete-user': {
           try {
-            var p = userDelCmd.parse(args);
+            var p = userRenameCmd.parse(args);
             await c.deleteUser(p['username']);
+          } catch (e) {
+            print("${e.message}");
+          }
+          break;
+        }
+        case 'rename-user': {
+          try {
+            var p = userDelCmd.parse(args);
+			// parser will throw and error if oldusername or newusername are not set
+            await c.renameUser(p['oldusername'], p['newusername']);
           } catch (e) {
             print("${e.message}");
           }
