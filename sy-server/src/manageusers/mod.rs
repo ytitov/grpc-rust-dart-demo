@@ -35,12 +35,14 @@ impl ManageUsers for ManageUsersService {
         }
     }
 
+    /*
     async fn rename_user(&self, r: Request<RenamedUser>) -> Result<Response<GenericError>, Status> {
         let &oldusername = r.get_ref().oldusername;
         let &newusername = r.get_ref().newusername;
         unimplemented!()
         //match UserModel::rename(&self.pg_pool, oldusername, newusername).await {
     }
+    */
 
     async fn create_group(&self, r: Request<CreateGroupParams>) -> Result<Response<Group>, Status> {
         let p: CreateGroupParams = r.into_inner();
