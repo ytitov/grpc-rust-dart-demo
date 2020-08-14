@@ -46,6 +46,14 @@ class Client {
     }
   }
 
+  Future<void> setGroup(username, groupname) async {
+    final sendmsg = SetGroupParms();
+    sendmsg.username = username;
+	sendmsg.group = groupname;
+    var response = await stub.setGroup(sendmsg);
+    print(response);
+  }
+
   Future<void> renameUser(oldusername, newusername) async {
     final sendmsg = RenamedUser();
     sendmsg.oldusername = oldusername;

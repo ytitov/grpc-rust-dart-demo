@@ -14,6 +14,14 @@ const ListAllSubject$json = const {
   ],
 };
 
+const SetGroupParms$json = const {
+  '1': 'SetGroupParms',
+  '2': const [
+    const {'1': 'username', '3': 1, '4': 1, '5': 9, '10': 'username'},
+    const {'1': 'group', '3': 2, '4': 1, '5': 9, '10': 'group'},
+  ],
+};
+
 const CreateUserParams$json = const {
   '1': 'CreateUserParams',
   '2': const [

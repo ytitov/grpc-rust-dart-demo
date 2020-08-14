@@ -11,6 +11,47 @@ import 'package:protobuf/protobuf.dart' as $pb;
 
 export 'manageusers.pbenum.dart';
 
+class SetGroupParms extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('SetGroupParms', package: const $pb.PackageName('manageusers'), createEmptyInstance: create)
+    ..aOS(1, 'username')
+    ..aOS(2, 'group')
+    ..hasRequiredFields = false
+  ;
+
+  SetGroupParms._() : super();
+  factory SetGroupParms() => create();
+  factory SetGroupParms.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory SetGroupParms.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  SetGroupParms clone() => SetGroupParms()..mergeFromMessage(this);
+  SetGroupParms copyWith(void Function(SetGroupParms) updates) => super.copyWith((message) => updates(message as SetGroupParms));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static SetGroupParms create() => SetGroupParms._();
+  SetGroupParms createEmptyInstance() => create();
+  static $pb.PbList<SetGroupParms> createRepeated() => $pb.PbList<SetGroupParms>();
+  @$core.pragma('dart2js:noInline')
+  static SetGroupParms getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SetGroupParms>(create);
+  static SetGroupParms _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get username => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set username($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasUsername() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearUsername() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get group => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set group($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasGroup() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearGroup() => clearField(2);
+}
+
 class CreateUserParams extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('CreateUserParams', package: const $pb.PackageName('manageusers'), createEmptyInstance: create)
     ..aOS(1, 'username')

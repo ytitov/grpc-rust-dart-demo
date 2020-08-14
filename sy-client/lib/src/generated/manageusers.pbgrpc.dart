@@ -40,6 +40,11 @@ class ManageUsersClient extends $grpc.Client {
           '/manageusers.ManageUsers/RenameUser',
           ($0.RenamedUser value) => value.writeToBuffer(),
           ($core.List<$core.int> value) => $0.GenericError.fromBuffer(value));
+  static final _$setGroup =
+      $grpc.ClientMethod<$0.SetGroupParms, $0.GenericError>(
+          '/manageusers.ManageUsers/SetGroup',
+          ($0.SetGroupParms value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $0.GenericError.fromBuffer(value));
 
   ManageUsersClient($grpc.ClientChannel channel, {$grpc.CallOptions options})
       : super(channel, options: options);
@@ -91,6 +96,13 @@ class ManageUsersClient extends $grpc.Client {
         options: options);
     return $grpc.ResponseFuture(call);
   }
+
+  $grpc.ResponseFuture<$0.GenericError> setGroup($0.SetGroupParms request,
+      {$grpc.CallOptions options}) {
+    final call = $createCall(_$setGroup, $async.Stream.fromIterable([request]),
+        options: options);
+    return $grpc.ResponseFuture(call);
+  }
 }
 
 abstract class ManageUsersServiceBase extends $grpc.Service {
@@ -139,6 +151,13 @@ abstract class ManageUsersServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.RenamedUser.fromBuffer(value),
         ($0.GenericError value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.SetGroupParms, $0.GenericError>(
+        'SetGroup',
+        setGroup_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.SetGroupParms.fromBuffer(value),
+        ($0.GenericError value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.User> createUser_Pre($grpc.ServiceCall call,
@@ -171,6 +190,11 @@ abstract class ManageUsersServiceBase extends $grpc.Service {
     return renameUser(call, await request);
   }
 
+  $async.Future<$0.GenericError> setGroup_Pre(
+      $grpc.ServiceCall call, $async.Future<$0.SetGroupParms> request) async {
+    return setGroup(call, await request);
+  }
+
   $async.Future<$0.User> createUser(
       $grpc.ServiceCall call, $0.CreateUserParams request);
   $async.Future<$0.Group> createGroup(
@@ -183,4 +207,6 @@ abstract class ManageUsersServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.WhichUser request);
   $async.Future<$0.GenericError> renameUser(
       $grpc.ServiceCall call, $0.RenamedUser request);
+  $async.Future<$0.GenericError> setGroup(
+      $grpc.ServiceCall call, $0.SetGroupParms request);
 }

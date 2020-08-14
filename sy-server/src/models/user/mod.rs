@@ -44,9 +44,37 @@ impl User {
         Ok(GenericError{ success: true, message: format!("User {} deleted", username).into() })
     }
 
+    pub async fn set_group(p: &PgPool, username: &str, group: &str) -> Result<GenericError, sqlx::Error> {
+        let userid = sqlx::query!("SELECT user_id FROM users WHERE username LIKE $1", username)
+            .fetch_one(p).await?;
+
+        let groupid = sqlx::query!("SELECT group_id FROM groups WHERE name LIKE $1", group)
+            .fetch_one(p).await?;
+
+        println!("Request to set user {} id {} to group {} id {} not processed.",
+            username, userid.user_id, group, groupid.group_id);
+
+        // First, try to update an existing row
+        // if that fails, insert the row
+        let rowsaffected = sqlx::query!("UPDATE user_groups SET group_id=$1 WHERE user_id=$2",
+            groupid.group_id, userid.user_id)
+            .execute(p).await?;
+
+        println!("Tried to UPDATE, rowsaffected: {:?}", rowsaffected);
+        // if needed, create a new row
+        
+        if rowsaffected == 0 {
+            sqlx::query!("INSERT INTO user_groups VALUES ($1, $2)", userid.user_id, groupid.group_id);
+            }
+
+        Ok(GenericError{ success: true, message: format!("User {} assigned to group {}",
+                username, group).into() })
+    }
+
     pub async fn rename(p: &PgPool, oldusername: &str, newusername: &str) -> Result<GenericError, sqlx::Error> {
-        // TODO: duplicate user name checking
-        //sqlx::query("UPDATE users SET username
-        unimplemented!()
+        sqlx::query!("UPDATE users SET username=$1 WHERE username LIKE $2", newusername, oldusername)
+            .execute(p).await?;
+
+        Ok(GenericError{ success: true, message: format!("Renamed user {} to {}", oldusername, newusername).into() })
     }
 }
