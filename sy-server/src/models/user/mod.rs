@@ -63,7 +63,7 @@ impl User {
         println!("Tried to UPDATE, rowsaffected: {:?}", rowsaffected);
         // if needed, create a new row
         
-        if rowsaffected == 0 {
+        if rowsaffected.rows_affected() == 0 {
             sqlx::query!("INSERT INTO user_groups VALUES ($1, $2)", userid.user_id, groupid.group_id);
             }
 
