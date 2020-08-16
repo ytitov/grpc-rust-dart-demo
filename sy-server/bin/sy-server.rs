@@ -1,8 +1,10 @@
 //use std::sync::Arc;
+use hyper::{Body, Request as HyperRequest, Response as HyperResponse};
 use std::task::{Context, Poll};
 use tonic::{
     transport::{NamedService, Server},
-    Request, Response, Status,
+    //Request, Response, Status,
+    body::BoxBody,
 };
 
 use tower::Service;
@@ -69,7 +71,39 @@ struct Svc<S> {
     pg_pool: PgPool,
 }
 
+impl<S> Service<HyperRequest<Body>> for Svc<S>
+where
+    S: Service<HyperRequest<Body>, Response = HyperResponse<BoxBody>>
+        + NamedService
+        + Clone
+        + Send
+        + 'static,
+    S::Future: Send + 'static,
+{
+    type Response = S::Response;
+    type Error = S::Error;
+    type Future = futures::future::BoxFuture<'static, Result<Self::Response, Self::Error>>;
+
+    fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+        self.svc.poll_ready(cx)
+    }
+
+    fn call(&mut self, req: HyperRequest<Body>) -> Self::Future {
+        let h = req.headers();
+        println!("headers: {:?}", h);
+        let mut svc = self.svc.clone();
+        //let _pg_pool = self.pg_pool.clone();
+
+        Box::pin(async move {
+            // Do async work here....
+
+            svc.call(req).await
+        })
+    }
+}
+
 //impl<ManageUsersService, Req> Service<Req> for Svc<ManageUsersService>
+/*
 impl<S, Req> Service<Req> for Svc<S>
 where
     S: Service<Req> + Send + Clone + 'static,
@@ -107,6 +141,7 @@ where
         })
     }
 }
+*/
 
 impl<S: NamedService> NamedService for Svc<S> {
     const NAME: &'static str = S::NAME;
