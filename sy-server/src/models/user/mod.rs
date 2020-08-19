@@ -51,21 +51,28 @@ impl User {
         let groupid = sqlx::query!("SELECT group_id FROM groups WHERE name LIKE $1", group)
             .fetch_one(p).await?;
 
-        println!("Request to set user {} id {} to group {} id {} not processed.",
-            username, userid.user_id, group, groupid.group_id);
+        let usergrouprow = sqlx::query!("SELECT user_id FROM user_groups WHERE user_id=$1", userid.user_id)
+            .fetch_one(p).await;
 
-        // First, try to update an existing row
-        // if that fails, insert the row
-        let rowsaffected = sqlx::query!("UPDATE user_groups SET group_id=$1 WHERE user_id=$2",
-            groupid.group_id, userid.user_id)
-            .execute(p).await?;
-
-        println!("Tried to UPDATE, rowsaffected: {:?}", rowsaffected);
-        // if needed, create a new row
-        
-        if rowsaffected.rows_affected() == 0 {
-            sqlx::query!("INSERT INTO user_groups VALUES ($1, $2)", userid.user_id, groupid.group_id);
+        match usergrouprow {
+            Ok(_) => {
+                // Row exists, do an UPDATE
+                sqlx::query!("UPDATE user_groups SET group_id=$1 WHERE user_id=$2",
+                    groupid.group_id, userid.user_id)
+                    .execute(p).await?;
+            },
+            Err(err) => {
+                // Row does not exist if err == RowNotFound
+                if let sqlx::Error::RowNotFound = err {
+                    // Row not found, do the INSERT
+                    sqlx::query!("INSERT INTO user_groups VALUES ($1, $2)", userid.user_id, groupid.group_id)
+                        .execute(p).await?;
+                } else {
+                    // Other database error, kick it upwards
+                    return Err(err);
+                }
             }
+        }
 
         Ok(GenericError{ success: true, message: format!("User {} assigned to group {}",
                 username, group).into() })
