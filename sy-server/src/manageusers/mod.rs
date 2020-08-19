@@ -13,6 +13,12 @@ pub struct ManageUsersService {
     pub pg_pool: PgPool,
 }
 
+impl ManageUsersService {
+    pub fn test() {
+        println!("test");
+    }
+}
+
 #[tonic::async_trait]
 impl ManageUsers for ManageUsersService {
     // rename this to ListUsers
