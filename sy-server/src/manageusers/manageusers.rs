@@ -37,7 +37,7 @@ pub struct WhichUser {
     pub username: std::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GenericError {
+pub struct GenericResult {
     #[prost(bool, tag = "1")]
     pub success: bool,
     #[prost(string, tag = "2")]
@@ -93,15 +93,15 @@ pub mod manage_users_server {
         async fn delete_user(
             &self,
             request: tonic::Request<super::WhichUser>,
-        ) -> Result<tonic::Response<super::GenericError>, tonic::Status>;
+        ) -> Result<tonic::Response<super::GenericResult>, tonic::Status>;
         async fn rename_user(
             &self,
             request: tonic::Request<super::RenamedUser>,
-        ) -> Result<tonic::Response<super::GenericError>, tonic::Status>;
+        ) -> Result<tonic::Response<super::GenericResult>, tonic::Status>;
         async fn set_group(
             &self,
             request: tonic::Request<super::SetGroupParms>,
-        ) -> Result<tonic::Response<super::GenericError>, tonic::Status>;
+        ) -> Result<tonic::Response<super::GenericResult>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct ManageUsersServer<T: ManageUsers> {
@@ -271,7 +271,7 @@ pub mod manage_users_server {
                     #[allow(non_camel_case_types)]
                     struct DeleteUserSvc<T: ManageUsers>(pub Arc<T>);
                     impl<T: ManageUsers> tonic::server::UnaryService<super::WhichUser> for DeleteUserSvc<T> {
-                        type Response = super::GenericError;
+                        type Response = super::GenericResult;
                         type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,
@@ -302,7 +302,7 @@ pub mod manage_users_server {
                     #[allow(non_camel_case_types)]
                     struct RenameUserSvc<T: ManageUsers>(pub Arc<T>);
                     impl<T: ManageUsers> tonic::server::UnaryService<super::RenamedUser> for RenameUserSvc<T> {
-                        type Response = super::GenericError;
+                        type Response = super::GenericResult;
                         type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,
@@ -333,7 +333,7 @@ pub mod manage_users_server {
                     #[allow(non_camel_case_types)]
                     struct SetGroupSvc<T: ManageUsers>(pub Arc<T>);
                     impl<T: ManageUsers> tonic::server::UnaryService<super::SetGroupParms> for SetGroupSvc<T> {
-                        type Response = super::GenericError;
+                        type Response = super::GenericResult;
                         type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,

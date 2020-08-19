@@ -35,7 +35,10 @@ impl ManageUsers for ManageUsersService {
         }
     }
 
-    async fn set_group(&self, r: Request<SetGroupParms>) -> Result<Response<GenericError>, Status> {
+    async fn set_group(
+        &self,
+        r: Request<SetGroupParms>,
+    ) -> Result<Response<GenericResult>, Status> {
         let username = &r.get_ref().username;
         let group = &r.get_ref().group;
 
@@ -49,7 +52,10 @@ impl ManageUsers for ManageUsersService {
         }
     }
 
-    async fn rename_user(&self, r: Request<RenamedUser>) -> Result<Response<GenericError>, Status> {
+    async fn rename_user(
+        &self,
+        r: Request<RenamedUser>,
+    ) -> Result<Response<GenericResult>, Status> {
         let oldusername = &r.get_ref().oldusername;
         let newusername = &r.get_ref().newusername;
 
@@ -77,13 +83,13 @@ impl ManageUsers for ManageUsersService {
         }
     }
 
-    async fn delete_user(&self, r: Request<WhichUser>) -> Result<Response<GenericError>, Status> {
+    async fn delete_user(&self, r: Request<WhichUser>) -> Result<Response<GenericResult>, Status> {
         let reqparms: WhichUser = r.into_inner();
 
         // try to delete a user
         let genericerror = match UserModel::delete_user(&self.pg_pool, &reqparms.username).await {
             Ok(msg) => msg,
-            Err(e) => GenericError {
+            Err(e) => GenericResult {
                 success: false,
                 message: format!("Failed to delete user: {}", e).into(),
             },

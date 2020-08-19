@@ -1,5 +1,5 @@
 use crate::preamble::*;
-use crate::manageusers::GenericError;
+use crate::manageusers::GenericResult;
 
 #[derive(sqlx::FromRow)]
 pub struct User {
@@ -29,7 +29,7 @@ impl User {
         Ok(r)
     }
 
-    pub async fn delete_user(p: &PgPool, username: &str) -> Result<GenericError, sqlx::Error> {
+    pub async fn delete_user(p: &PgPool, username: &str) -> Result<GenericResult, sqlx::Error> {
         // find user in db, set delted timestamp
         // TODO: This first query is not necessary
         let _r: User = sqlx::query_as("SELECT user_id, username FROM users WHERE username LIKE $1")
@@ -41,10 +41,10 @@ impl User {
             .bind(username)
             .execute(p).await?;
 
-        Ok(GenericError{ success: true, message: format!("User {} deleted", username).into() })
+        Ok(GenericResult{ success: true, message: format!("User {} deleted", username).into() })
     }
 
-    pub async fn set_group(p: &PgPool, username: &str, group: &str) -> Result<GenericError, sqlx::Error> {
+    pub async fn set_group(p: &PgPool, username: &str, group: &str) -> Result<GenericResult, sqlx::Error> {
         let userid = sqlx::query!("SELECT user_id FROM users WHERE username LIKE $1", username)
             .fetch_one(p).await?;
 
@@ -74,14 +74,14 @@ impl User {
             }
         }
 
-        Ok(GenericError{ success: true, message: format!("User {} assigned to group {}",
+        Ok(GenericResult{ success: true, message: format!("User {} assigned to group {}",
                 username, group).into() })
     }
 
-    pub async fn rename(p: &PgPool, oldusername: &str, newusername: &str) -> Result<GenericError, sqlx::Error> {
+    pub async fn rename(p: &PgPool, oldusername: &str, newusername: &str) -> Result<GenericResult, sqlx::Error> {
         sqlx::query!("UPDATE users SET username=$1 WHERE username LIKE $2", newusername, oldusername)
             .execute(p).await?;
 
-        Ok(GenericError{ success: true, message: format!("Renamed user {} to {}", oldusername, newusername).into() })
+        Ok(GenericResult{ success: true, message: format!("Renamed user {} to {}", oldusername, newusername).into() })
     }
 }
