@@ -31,7 +31,3 @@ tonic-build = "0.3"
 [[bin]]
 name = "sy-server"
 path = "bin/sy-server.rs"
-
-[[bin]]
-name = "build-proto-server"
-path = "bin/build-proto-server.rs"

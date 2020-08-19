@@ -6,7 +6,14 @@ service ManageUsers {
   rpc CreateGroup(CreateGroupParams) returns (Group) {}
   rpc ListAllUsers(EmptyParams) returns (stream User) {}
   rpc ListAllGroups(EmptyParams) returns (stream Group) {}
-  rpc DeleteUser(WhichUser) returns (GenericError) {}
+  rpc DeleteUser(WhichUser) returns (GenericResult) {}
+  rpc RenameUser(RenamedUser) returns (GenericResult) {}
+  rpc SetGroup(SetGroupParms) returns (GenericResult) {}
+}
+
+message SetGroupParms {
+  string username = 1;
+  string group = 2;
 }
 
 message CreateUserParams {
@@ -40,7 +47,12 @@ message WhichUser
   string username = 1;
 }
 
-message GenericError {
+message GenericResult {
   bool success = 1;
   string message = 2;
+}
+
+message RenamedUser {
+  string oldusername = 1;
+  string newusername = 2;
 }
