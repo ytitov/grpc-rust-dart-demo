@@ -42,8 +42,10 @@ impl ManageUsers for ManageUsersService {
         match UserModel::set_group(&self.pg_pool, username, group).await {
             Ok(res_success) => Ok(Response::new(res_success)),
 
-            Err(res_err) => Err(Status::out_of_range(
-                    format!("Could not assign user {} to group {}: {}", username, group, res_err))),
+            Err(res_err) => Err(Status::out_of_range(format!(
+                "Could not assign user {} to group {}: {}",
+                username, group, res_err
+            ))),
         }
     }
 

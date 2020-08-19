@@ -26,7 +26,7 @@ The proto files are found inside the base `proto` folder.  Anytime there is a ch
 ### Client - dart
 Execute the `gen_protos.sh` script
 ### Server - rust
-Execute `cargo run --bin build-proto-server` in the `sy-server` directory.  
+Execute `cargo run` in the `protobuild` directory.  
 
 # Server
 ## database
@@ -41,7 +41,7 @@ Enter the directory `sy-server` when running these commands:
 
 # Client
 This is a dart client.  Enter the directory `sy-client`
-- `dart bin/client.dart`
+- `dart bin/manageusers-cli.dart`
 
 TODO:
 - create cli tool for using the manageusers service on the dart side of things
