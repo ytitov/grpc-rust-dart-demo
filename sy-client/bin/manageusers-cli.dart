@@ -22,6 +22,10 @@ main(List<String> args) async {
   var groupAddCmd = mainParser.addCommand('add-group', ArgParser()
       ..addOption('name', abbr: 'n', help: 'name of the group')
   );
+  var setPwdCmd = mainParser.addCommand('set-pwd', ArgParser()
+      ..addOption('username', abbr: 'u', help: 'username, use with -p newpwd')
+      ..addOption('pwd', abbr: 'p', help: 'password, use with -u username')
+  );
   var listGroupsCmd = mainParser.addCommand('list-groups');
   var listUsersCmd = mainParser.addCommand('list-users');
 
@@ -33,6 +37,15 @@ main(List<String> args) async {
 
     if (par.command != null) {
       switch (par.command.name) {
+		case 'set-pwd': {
+			try {
+				var parms = setPwdCmd.parse(args);
+				await c.setPassword(parms['username'], parms['pwd']);
+			} catch (e) {
+				print("${e.message}");
+			}
+			break;
+		}
         case 'add-user': {
           try {
             var p = userAddCmd.parse(args);

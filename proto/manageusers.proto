@@ -9,6 +9,12 @@ service ManageUsers {
   rpc DeleteUser(WhichUser) returns (GenericResult) {}
   rpc RenameUser(RenamedUser) returns (GenericResult) {}
   rpc SetGroup(SetGroupParms) returns (GenericResult) {}
+  rpc SetPassword(SetPwdParms) returns (GenericResult) {}
+}
+
+message SetPwdParms {
+  string username = 1;
+  string pwd = 2;
 }
 
 message SetGroupParms {

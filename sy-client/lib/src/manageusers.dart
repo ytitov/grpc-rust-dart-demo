@@ -18,6 +18,17 @@ class Client {
         options: CallOptions(timeout: Duration(seconds: 30)));
   }
 
+  Future<void> setPassword(String username, String pwd) async {
+	  final message = SetPwdParms();
+	  
+	  message.username = username;
+	  message.pwd = pwd;
+
+	  var response = await stub.setPassword(message);
+
+	  print('password set:\n${response}');
+  }
+
   Future<void> createUser(String username) async {
     final a = CreateUserParams();
     a.username = username;

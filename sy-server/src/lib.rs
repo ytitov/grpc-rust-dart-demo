@@ -5,6 +5,8 @@ pub mod manageusers;
 
 pub mod models;
 
+pub mod auth;
+
 pub mod preamble {
     pub use sqlx::{query_as, postgres::PgPool};
     pub use sqlx::types::*;

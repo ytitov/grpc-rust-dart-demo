@@ -1,4 +1,11 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetPwdParms {
+    #[prost(string, tag = "1")]
+    pub username: std::string::String,
+    #[prost(string, tag = "2")]
+    pub pwd: std::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SetGroupParms {
     #[prost(string, tag = "1")]
     pub username: std::string::String,
@@ -101,6 +108,10 @@ pub mod manage_users_server {
         async fn set_group(
             &self,
             request: tonic::Request<super::SetGroupParms>,
+        ) -> Result<tonic::Response<super::GenericResult>, tonic::Status>;
+        async fn set_password(
+            &self,
+            request: tonic::Request<super::SetPwdParms>,
         ) -> Result<tonic::Response<super::GenericResult>, tonic::Status>;
     }
     #[derive(Debug)]
@@ -349,6 +360,37 @@ pub mod manage_users_server {
                         let interceptor = inner.1.clone();
                         let inner = inner.0;
                         let method = SetGroupSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = if let Some(interceptor) = interceptor {
+                            tonic::server::Grpc::with_interceptor(codec, interceptor)
+                        } else {
+                            tonic::server::Grpc::new(codec)
+                        };
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/manageusers.ManageUsers/SetPassword" => {
+                    #[allow(non_camel_case_types)]
+                    struct SetPasswordSvc<T: ManageUsers>(pub Arc<T>);
+                    impl<T: ManageUsers> tonic::server::UnaryService<super::SetPwdParms> for SetPasswordSvc<T> {
+                        type Response = super::GenericResult;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::SetPwdParms>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).set_password(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let interceptor = inner.1.clone();
+                        let inner = inner.0;
+                        let method = SetPasswordSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = if let Some(interceptor) = interceptor {
                             tonic::server::Grpc::with_interceptor(codec, interceptor)

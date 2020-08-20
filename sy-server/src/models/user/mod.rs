@@ -8,6 +8,15 @@ pub struct User {
 }
 
 impl User {
+    pub async fn set_password(p: &PgPool, username: &str, pwd: &str) -> Result<GenericResult, sqlx::Error> {
+        sqlx::query!("UPDATE users SET salt=$1 WHERE username=$2", pwd, username)
+            .execute(p)
+            .await?;
+
+        Ok(GenericResult{success: true, message: format!("User {} has new password: {}",
+                username, pwd).into()})
+    }
+
     pub async fn with_username(p: &PgPool, username: &str) -> Result<Self, sqlx::Error> {
         let r: User = query_as("SELECT user_id, username from users where username like $1")
             .bind(username)
