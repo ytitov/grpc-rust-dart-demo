@@ -10,6 +10,17 @@ service ManageUsers {
   rpc RenameUser(RenamedUser) returns (GenericResult) {}
   rpc SetGroup(SetGroupParms) returns (GenericResult) {}
   rpc SetPassword(SetPwdParms) returns (GenericResult) {}
+  rpc AuthUser(AuthParms) returns (AuthResponse) {}
+}
+
+message AuthParms {
+  string username = 1;
+  string pwd = 2;
+}
+
+message AuthResponse {
+  bool authorized = 1;
+  string sessionid = 2;
 }
 
 message SetPwdParms {

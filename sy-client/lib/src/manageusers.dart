@@ -18,6 +18,17 @@ class Client {
         options: CallOptions(timeout: Duration(seconds: 30)));
   }
 
+  Future<void> authUser(String username, String pwd) async {
+	  final message = AuthParms();
+	  
+	  message.username = username;
+	  message.pwd = pwd;
+
+	  var response = await stub.authUser(message);
+
+	  print('user authorized?\n${response}');
+  }
+
   Future<void> setPassword(String username, String pwd) async {
 	  final message = SetPwdParms();
 	  
