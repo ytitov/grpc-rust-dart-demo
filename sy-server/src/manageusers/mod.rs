@@ -26,6 +26,30 @@ impl ManageUsers for ManageUsersService {
     type ListAllUsersStream = mpsc::Receiver<Result<User, Status>>;
     type ListAllGroupsStream = mpsc::Receiver<Result<Group, Status>>;
 
+    async fn auth_user(
+        &self,
+        request: Request<AuthParms>,
+    ) -> Result<Response<AuthResponse>, Status> {
+        let parms = request.into_inner();
+
+        match UserModel::auth_user(&self.pg_pool, &parms.username, &parms.pwd).await {
+            Ok(response) => Ok(Response::new(response)),
+            Err(e) => Err(Status::internal(format!("Could not auth user: {}", e))),
+        }
+    }
+
+    async fn set_password(
+        &self,
+        request: Request<SetPwdParms>,
+    ) -> Result<Response<GenericResult>, Status> {
+        let parms = request.into_inner();
+
+        match UserModel::set_password(&self.pg_pool, &parms.username, &parms.pwd).await {
+            Ok(response) => Ok(Response::new(response)),
+            Err(e) => Err(Status::internal(format!("Could not set pwd: {}", e))),
+        }
+    }
+
     async fn create_user(&self, _r: Request<CreateUserParams>) -> Result<Response<User>, Status> {
         let p: CreateUserParams = _r.into_inner();
         use models::user::User as UserModel;
