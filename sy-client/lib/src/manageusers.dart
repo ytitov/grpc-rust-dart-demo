@@ -2,12 +2,16 @@ import 'dart:math' show Random;
 
 import 'package:grpc/grpc.dart';
 
-import 'generated/manageusers.pb.dart';
+//import 'generated/manageusers.pb.dart';
 import 'generated/manageusers.pbgrpc.dart';
+
+//import 'generated/messages.pb.dart';
+import 'generated/messages.pbgrpc.dart';
 
 class Client {
   ClientChannel channel;
   ManageUsersClient stub;
+  MessagesClient messagesStub;
 
   Client(String url, int port) {
     channel = ClientChannel(url,
@@ -16,6 +20,20 @@ class Client {
             const ChannelOptions(credentials: ChannelCredentials.insecure()));
     stub = ManageUsersClient(channel,
         options: CallOptions(timeout: Duration(seconds: 30)));
+    messagesStub = MessagesClient(channel,
+        options: CallOptions(timeout: Duration(seconds: 30)));
+  }
+
+  Future<void> newMessage(String username, String message, String recipient_username) async {
+	  final packet = NewMessageParms();
+	  
+	  packet.username = username;
+	  packet.messageText = message;
+	  packet.recipientUsername = recipient_username;
+
+	  var response = await messagesStub.newMessage(packet);
+
+	  print('message sent?\n${response}');
   }
 
   Future<void> authUser(String username, String pwd) async {

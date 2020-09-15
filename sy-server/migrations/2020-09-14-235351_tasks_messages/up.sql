@@ -39,18 +39,6 @@ CREATE TABLE completed_tasks (
   FOREIGN KEY(completed_by) REFERENCES users(user_id)
 )
 
-/*
- * to get assigned user, search this table
- * if no assigned user, then it's a group task
- * to get assigned group, check task owner's group *AWKWARD
- */
-CREATE TABLE task_assignments (
-  task_id uuid NOT NULL,
-  assigned_to_user uuid,
-  FOREIGN KEY (task_id) REFERENCES tasks(task_id),
-  FOREIGN KEY (assigned_to_user) REFERENCES users(user_id),
-)
-
 CREATE TABLE groups (
   group_id uuid NOT NULL DEFAULT uuid_generate_v4(),
   name character varying(255) NOT NULL,

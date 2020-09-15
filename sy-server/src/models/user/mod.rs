@@ -10,6 +10,13 @@ pub struct User {
 }
 
 impl User {
+    pub async fn id_from_username(p: &PgPool, username: &str) -> Result<Uuid, sqlx::Error> {
+        let result = sqlx::query!("SELECT user_id FROM users WHERE username=$1", username)
+            .fetch_one(p).await?;
+
+        Ok(result.user_id)
+    }
+
     pub async fn set_password(p: &PgPool, username: &str, pwd: &str) -> Result<GenericResult, sqlx::Error> {
         // get salt and hash 
         match gen_hash_and_salt(pwd) {
@@ -105,7 +112,7 @@ impl User {
             .fetch_one(p).await;
 
         match usergrouprow {
-            Ok(_) => {
+            Ok(_) => { // does fetch_one return a None/Some? If row is not found it seems to return an error
                 // Row exists, do an UPDATE
                 sqlx::query!("UPDATE user_groups SET group_id=$1 WHERE user_id=$2",
                     groupid.group_id, userid.user_id)

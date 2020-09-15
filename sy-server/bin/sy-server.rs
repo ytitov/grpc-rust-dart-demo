@@ -5,6 +5,9 @@ use tonic::{
     transport::{NamedService, Server},
     //Request, Response, Status,
     body::BoxBody,
+    Interceptor,
+    Request,
+    Status
 };
 
 use tower::Service;
@@ -16,6 +19,8 @@ use sqlx::postgres::PgPool;
 //use sy_server::manageusers::manage_users_server::{ManageUsersServer, ManageUsersService};
 use sy_server::manageusers::ManageUsersService;
 use sy_server::manageusers::manage_users_server::ManageUsersServer;
+use sy_server::messages::MessagesService;
+use sy_server::messages::messages_server::MessagesServer;
 
 #[derive(Clap, Debug, Clone)]
 #[clap(version = "0.1.0", author = "Yuri Titov <ytitov@gmail.com>")]
@@ -44,6 +49,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Create a connection pool
     let pool = PgPool::connect(&opts.db_url).await?;
     let pool2 = PgPool::connect(&opts.db_url).await?;
+    let pool3 = PgPool::connect(&opts.db_url).await?;
     let row: (i64,) = sqlx::query_as("SELECT $1")
         .bind(150_i64)
         .fetch_one(&pool)
@@ -52,12 +58,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let svc = Svc { pg_pool: pool2, svc: ManageUsersServer::new(ManageUsersService { pg_pool: pool }) };
 
+    let messages_service = MessagesService{ pg_pool: pool3 };
+    let messages_interceptor = Interceptor::new(messages_interceptor_fn);
+    let messages_server_service = MessagesServer::with_interceptor(messages_service, messages_interceptor);
+
     Server::builder()
         .add_service(svc)
+        .add_service(messages_server_service)
         .serve(addr)
         .await?;
 
     Ok(())
+}
+
+fn messages_interceptor_fn(request: Request<()>) -> Result<Request<()>, Status> {
+    println!("Messages service traffic intercepted: {:?}", request.metadata());
+    Ok(request)
 }
 
 // this code is copy pasted from:

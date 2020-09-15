@@ -2,6 +2,7 @@ use tokio::sync::mpsc;
 use tonic::{Request, Response, Status};
 
 pub mod manageusers;
+pub mod messages;
 
 pub mod models;
 
