@@ -5,6 +5,11 @@ import 'package:args/args.dart';
 // https://github.com/dart-lang/args/blob/master/example/test_runner.dart
 main(List<String> args) async {
   var mainParser = ArgParser();
+  var newMsgCmd = mainParser.addCommand('new-message', ArgParser()
+      ..addOption('username', abbr: 'u', help: 'username of the author')
+      ..addOption('recipient', abbr: 'r', help: 'username of the recipient')
+	  ..addOption('message', abbr: 'm', help: 'message text')
+  );
   var userSetGroupCmd = mainParser.addCommand('set-group', ArgParser()
       ..addOption('username', abbr: 'u', help: 'username of the existing user to assign to group')
       ..addOption('groupname', abbr: 'g', help: 'group to assign to user')
@@ -41,6 +46,15 @@ main(List<String> args) async {
 
     if (par.command != null) {
       switch (par.command.name) {
+		case 'new-message': {
+			try {
+				var parms = newMsgCmd.parse(args);
+				await c.newMessage(parms['username'], parms['message'], parms['recipient']);
+			} catch (e) {
+				print("${e.message}");
+			}
+			break;
+		}
 		case 'auth-user': {
 			try {
 				var parms = authUserCmd.parse(args);
