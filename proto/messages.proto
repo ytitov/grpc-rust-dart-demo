@@ -1,0 +1,17 @@
+syntax = "proto3";
+package messages;
+
+service Messages {
+  rpc NewMessage(NewMessageParms) returns (BasicResponse) {}
+}
+
+message NewMessageParms {
+  string username = 1;
+  string message_text = 2;
+  string recipient_username = 3;
+}
+
+message BasicResponse {
+  bool success = 1;
+  string message = 2;
+}
