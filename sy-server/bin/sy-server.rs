@@ -16,6 +16,9 @@ use clap::Clap;
 
 use sqlx::postgres::PgPool;
 
+extern crate redis;
+use redis::Commands;
+
 //use sy_server::manageusers::manage_users_server::{ManageUsersServer, ManageUsersService};
 use sy_server::manageusers::ManageUsersService;
 use sy_server::manageusers::manage_users_server::ManageUsersServer;
@@ -31,8 +34,8 @@ pub struct Opts {
         about = "Database url to connect to",
         default_value = "postgres://postgres_user:postgres_pw@localhost:5432/default-db"
     )]
-    pub db_url: String,
-    #[clap(short, long, default_value = "10000", about = "The port to bind to")]
+        pub db_url: String,
+        #[clap(short, long, default_value = "10000", about = "The port to bind to")]
     pub port: String,
 }
 
@@ -49,7 +52,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Create a connection pool
     let pool = PgPool::connect(&opts.db_url).await?;
     let pool2 = PgPool::connect(&opts.db_url).await?;
-    let pool3 = PgPool::connect(&opts.db_url).await?;
+    let messages_pgpool = PgPool::connect(&opts.db_url).await?;
+
+    let redis_cli = redis::Client::open("redis://127.0.0.1/")?;
+
     let row: (i64,) = sqlx::query_as("SELECT $1")
         .bind(150_i64)
         .fetch_one(&pool)
@@ -58,8 +64,33 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let svc = Svc { pg_pool: pool2, svc: ManageUsersServer::new(ManageUsersService { pg_pool: pool }) };
 
-    let messages_service = MessagesService{ pg_pool: pool3 };
-    let messages_interceptor = Interceptor::new(messages_interceptor_fn);
+    let messages_service = MessagesService{ pg_pool: messages_pgpool };
+    //let messages_interceptor = Interceptor::new(messages_interceptor_fn);
+
+    // Implement the security interceptor
+    let messages_interceptor = Interceptor::new(move |request| {
+        if let Ok(mut redis_con) = redis_cli.get_connection() {
+            // Check header for session ID
+            let metamap = request.metadata();
+
+            if let Some(client_session_id) = metamap.get("session-id") {
+                if let Ok(redis_session_id) = redis_con.get::<&str, String>("session-id") {
+                    // check if they match
+                    println!("Checking incoming session id {:?} with redis id {:?}",
+                        redis_session_id, client_session_id.to_str().unwrap());
+
+                    if redis_session_id == client_session_id.to_str().unwrap() {
+                        return Ok(request);
+                    }
+                }
+            }
+            // Check redis for session ID
+        }
+        // If match, ok
+        // If null or no match, reject with Status
+        Err(Status::unauthenticated("Authentication failed"))
+
+    });
     let messages_server_service = MessagesServer::with_interceptor(messages_service, messages_interceptor);
 
     Server::builder()
@@ -71,7 +102,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn messages_interceptor_fn(request: Request<()>) -> Result<Request<()>, Status> {
+fn _messages_interceptor_fn(request: Request<()>) -> Result<Request<()>, Status> {
     println!("Messages service traffic intercepted: {:?}", request.metadata());
     Ok(request)
 }
@@ -90,10 +121,10 @@ struct Svc<S> {
 impl<S> Service<HyperRequest<Body>> for Svc<S>
 where
     S: Service<HyperRequest<Body>, Response = HyperResponse<BoxBody>>
-        + NamedService
-        + Clone
-        + Send
-        + 'static,
+    + NamedService
+    + Clone
+    + Send
+    + 'static,
     S::Future: Send + 'static,
 {
     type Response = S::Response;
@@ -120,42 +151,42 @@ where
 
 //impl<ManageUsersService, Req> Service<Req> for Svc<ManageUsersService>
 /*
-impl<S, Req> Service<Req> for Svc<S>
-where
-    S: Service<Req> + Send + Clone + 'static,
-    S::Future: Send + 'static,
-    Req: Send + 'static + std::fmt::Debug,
-{
-    type Response = S::Response;
-    type Error = S::Error;
-    type Future = futures::future::BoxFuture<'static, Result<Self::Response, Self::Error>>;
+   impl<S, Req> Service<Req> for Svc<S>
+   where
+   S: Service<Req> + Send + Clone + 'static,
+   S::Future: Send + 'static,
+   Req: Send + 'static + std::fmt::Debug,
+   {
+   type Response = S::Response;
+   type Error = S::Error;
+   type Future = futures::future::BoxFuture<'static, Result<Self::Response, Self::Error>>;
 
-    fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
-        self.svc.poll_ready(cx)
-    }
+   fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+   self.svc.poll_ready(cx)
+   }
 
-    // this is defined as a trait, and I can't get to the actual Request
-    // and if I try to define it as a Request<()> it flips out
-    fn call(&mut self, req: Req) -> Self::Future {
-        //let p = req.into_inner();
-        let mut svc = self.svc.clone();
-        let pg_pool = self.pg_pool.clone();
-        //let p = &self.svc.pg_pool;
+// this is defined as a trait, and I can't get to the actual Request
+// and if I try to define it as a Request<()> it flips out
+fn call(&mut self, req: Req) -> Self::Future {
+//let p = req.into_inner();
+let mut svc = self.svc.clone();
+let pg_pool = self.pg_pool.clone();
+//let p = &self.svc.pg_pool;
 
-        Box::pin(async move {
-            // Do async work here....
-            let row: Result<(i64,), sqlx::Error> = sqlx::query_as("SELECT $1")
-                .bind(150_i64)
-                .fetch_one(&pg_pool)
-                .await;
-            println!("req: {:?}", &req);
-            println!("postgres query inside middleware {:?}", &row);
-            // very confused why this can't see pg_pool
-            //println!("{:?}", &svc.pg_pool);
+Box::pin(async move {
+// Do async work here....
+let row: Result<(i64,), sqlx::Error> = sqlx::query_as("SELECT $1")
+.bind(150_i64)
+.fetch_one(&pg_pool)
+.await;
+println!("req: {:?}", &req);
+println!("postgres query inside middleware {:?}", &row);
+// very confused why this can't see pg_pool
+//println!("{:?}", &svc.pg_pool);
 
-            svc.call(req).await
-        })
-    }
+svc.call(req).await
+})
+}
 }
 */
 

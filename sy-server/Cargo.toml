@@ -18,6 +18,7 @@ sqlx = { version = "0.4.0-beta.1", default-features = false, features = [ "runti
 futures = { version = "0.3", default-features = false, features = ["alloc"] }
 async-stream = "0.2"
 
+
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 rand = "0.7"
@@ -29,6 +30,9 @@ bcrypt = "0.8"
 
 [build-dependencies]
 tonic-build = "0.3"
+
+[dependencies.redis]
+version = "*"
 
 [[bin]]
 name = "sy-server"
