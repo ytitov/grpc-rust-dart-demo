@@ -22,6 +22,20 @@ services:
     networks:
       - main
 
+  redis:
+    #container_name: ${COMPOSE_PROJECT_NAME}_redis
+    restart: always
+    build:
+      context: ./
+      dockerfile: ./redis.Dockerfile
+    networks:
+      - main
+    logging:
+      driver: json-file
+      options:
+        max-file: "2"
+        max-size: "10m"
+
 volumes:
   dbdata:
 networks:

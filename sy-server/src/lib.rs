@@ -6,7 +6,7 @@ pub mod messages;
 
 pub mod models;
 
-pub mod auth;
+//pub mod auth;
 
 pub mod preamble {
     pub use sqlx::{query_as, postgres::PgPool};
